@@ -171,7 +171,7 @@ module PvaultSdk
       query_params[:'object_ids'] = @api_client.build_collection_param(opts[:'object_ids'], :multi) if !opts[:'object_ids'].nil?
       query_params[:'options'] = @api_client.build_collection_param(opts[:'options'], :multi) if !opts[:'options'].nil?
       query_params[:'tags'] = @api_client.build_collection_param(opts[:'tags'], :multi) if !opts[:'tags'].nil?
-      query_params[:'token_ids'] = @api_client.build_collection_param(opts[:'token_ids'], :multi) if !opts[:'token_ids'].nil?
+      query_params[:'token_ids'] = @api_client.build_collection_param(opts[:'token_ids'], :csv) if !opts[:'token_ids'].nil?
       query_params[:'adhoc_reason'] = opts[:'adhoc_reason'] if !opts[:'adhoc_reason'].nil?
       query_params[:'reload_cache'] = opts[:'reload_cache'] if !opts[:'reload_cache'].nil?
 

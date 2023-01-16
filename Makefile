@@ -23,10 +23,11 @@ pvault-run: pvault-stop
 	# Add a users collection with email property to be used for tokenization.
 	docker exec -i pvault-dev pvault collection add --collection-pvschema " \
 		users PERSONS ( 	\
-			name STRING, \
-			email STRING, \
+			name STRING NULL, \
+			email STRING NULL, \
 			ssn SSN NULL, \
 		)"
+
 
 .PHONY: pvault-stop
 pvault-stop:
@@ -43,7 +44,7 @@ $(APP_DIR)/Gemfile.lock:
 	cd $(APP_DIR) && bundle
 
 $(APP_DIR)/migrate:
-	cd $(APP_DIR) && bundle exec rails db:migrate
+	cd $(APP_DIR) && bundle exec rails db:reset
 
 .PHONY: prepare
 prepare: prepare-app
@@ -56,7 +57,7 @@ app-run: prepare pvault-run
 	cd $(APP_DIR) && bin/dev
 
 .PHONY: app-test
-app-test: prepare stop-prereq
+app-test: prepare stop-prereq pvault-run
 	cd $(APP_DIR) && bundle exec rails test
 
 ###### SDK RUBY ######

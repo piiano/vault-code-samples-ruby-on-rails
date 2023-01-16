@@ -2,8 +2,8 @@
   <a href="https://piiano.com/pii-data-privacy-vault/">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="https://piiano.com/docs/img/logo-developers-dark.svg">
-      <source media="(prefers-color-scheme: light)" srcset="https://piiano.com/docs/img/logo-developers.svg">
-      <img alt="Piiano Vault" src="https://piiano.com/docs/img/logo-developers.svg" height="40" />
+      <source media="(prefers-color-scheme: light)" srcset="https://piiano.com/wp-content/uploads/piiano-logo-developers.png">
+      <img alt="Piiano Vault" src="https://piiano.com/wp-content/uploads/piiano-logo-developers.png" height="40" />
     </picture>
   </a>
 </p>
@@ -15,7 +15,7 @@ _Piiano Vault: The secure home for sensitive personal data_
 Piiano Vault Ruby on Rails framework samples
 ============================================
 
-The code in this directory contains sample code in Ruby on Rails (RoR) framework for a safe User management CRUD API with [Piiano Vault](http://piiano.com).
+The code in this directory contains sample code in Ruby on Rails (RoR) framework for a safe User management CRUD API with [Piiano Vault](http://piiano.com) with [ActiveRecord record encryption](https://guides.rubyonrails.org/active_record_encryption.html).
 
 ## Background
 
@@ -62,16 +62,21 @@ When the application is started, you can make API calls to the API endpoints:
 curl -X POST http://localhost:5100/users \
   -H 'Accept: application/json' \
   -H 'Content-Type: application/json' \
-  -d '{ "email": "email@example.com", "name": "John Doe", "ssn": "12345" }'
+  -d '{ "email": "email@example.com", "name": "John Doe", "ssn": "123-12-1234" }'
 
 # List all users
 curl -X GET http://localhost:5100/users \
   -H 'Accept: application/json' \
   -H 'Content-Type: application/json'
-
 ```
 
 Or, manage users through the web interface: http://localhost:5100/users
+
+You can verify that your users table values are tokenized by running the following command:
+
+```bash
+rails runner 'pp User.connection.execute("SELECT * FROM users")'
+```
 
 ## Updating Piiano Vault Ruby SDK
 

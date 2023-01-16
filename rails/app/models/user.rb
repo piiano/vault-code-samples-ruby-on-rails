@@ -1,9 +1,10 @@
 require 'uri'
-require 'piiano/vault/encryption/encryptor'
+require 'piiano/vault/encryption/tokenizer'
+
 class User < ApplicationRecord
-    encrypts :name, encryptor: Piiano::Vault::Encryption::Encryptor.new(:name)
-    encrypts :ssn, encryptor: Piiano::Vault::Encryption::Encryptor.new(:ssn)
-    encrypts :email, encryptor: Piiano::Vault::Encryption::Encryptor.new(:email), deterministic: true, downcase: true
+    encrypts :name, encryptor: Piiano::Vault::Encryption::Tokenizer.new(collection: :users, property: :name)
+    encrypts :ssn, encryptor: Piiano::Vault::Encryption::Tokenizer.new(collection: :users, property: :ssn)
+    encrypts :email, encryptor: Piiano::Vault::Encryption::Tokenizer.new(collection: :users, property: :email), deterministic: true, downcase: true
 
     validates :name,
         format: { with: /\A[^`!@#$%\^&*+=<>{}"?]+\z/ },

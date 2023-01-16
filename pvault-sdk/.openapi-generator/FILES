@@ -7,6 +7,14 @@
 Gemfile
 README.md
 Rakefile
+docs/CollectionPropertiesApi.md
+docs/CollectionsApi.md
+docs/ConfigVarsApi.md
+docs/DataTypesAndTransformationsApi.md
+docs/IAMApi.md
+docs/ObjectsApi.md
+docs/SystemApi.md
+docs/TokensApi.md
 git_push.sh
 lib/pvault-sdk.rb
 lib/pvault-sdk/api/collection_properties_api.rb

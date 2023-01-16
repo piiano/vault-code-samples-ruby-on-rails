@@ -2,10 +2,10 @@
 
 one:
   email: test1@test.com
-  ssn: MyString
+  ssn: 123-12-1234
   name: MyString
 
 two:
   email: test2@test.com
-  ssn: MyString
+  ssn: 123-12-1234
   name: MyString

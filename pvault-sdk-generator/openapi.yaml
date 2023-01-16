@@ -702,6 +702,7 @@ paths:
         - description: Comma-separated list of token IDs.
           in: query
           name: token_ids
+          explode: false
           schema:
             items:
               type: string
