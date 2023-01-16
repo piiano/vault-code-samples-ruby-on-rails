@@ -33,4 +33,6 @@ jobs:
       uses: actions/setup-ruby@v1
       with:
         ruby-version: ${{ matrix.ruby-version }}
-    - run: make app-test
+    
+    - name: run tests
+      run: make app-test

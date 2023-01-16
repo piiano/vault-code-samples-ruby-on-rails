@@ -38,10 +38,13 @@ pvault-stop:
 prepare-sdk: generate-sdk
 
 .PHONY: prepare-app
-prepare-app: $(APP_DIR)/.bundle $(APP_DIR)/migrate
+prepare-app: $(APP_DIR)/.bundle $(APP_DIR)/public/assets $(APP_DIR)/migrate
 
 $(APP_DIR)/.bundle:
 	cd $(APP_DIR) && bundle
+
+$(APP_DIR)/public/assets:
+	cd $(APP_DIR) && bundle exec rails assets:precompile
 
 $(APP_DIR)/migrate:
 	cd $(APP_DIR) && bundle exec rails db:reset
