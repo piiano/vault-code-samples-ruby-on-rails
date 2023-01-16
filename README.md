@@ -51,6 +51,7 @@ This sample code requires a valid Piiano Vault service license in order to run P
 
 ```bash
 export PVAULT_SERVICE_LICENSE=<your Piiano Vault license>
+export PVAULT_API_KEY = "pvaultauth"
 ```
 
 `make app-run` - Start the application and its prerequisites (Piiano Vault).  
@@ -94,6 +95,7 @@ Tests for this example include a full integration test with a single-container P
 
 ```bash
 export PVAULT_SERVICE_LICENSE=<your Piiano Vault license>
+export PVAULT_API_KEY = "pvaultauth"
 
 make app-test
 ```

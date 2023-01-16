@@ -18,5 +18,11 @@ module VaultCodeSamplesRails
     #
     # config.time_zone = "Central Time (US & Canada)"
     config.eager_load_paths << Rails.root.join("lib")
+
+    # The ActiveRecord encryption API requires setting these in order to function.
+    # Since we use Piiano Vault in this example, we override these.
+    config.active_record.encryption.primary_key = "dummy"
+    config.active_record.encryption.deterministic_key = "dummy"
+    config.active_record.encryption.key_derivation_salt = "dummy"
   end
 end
