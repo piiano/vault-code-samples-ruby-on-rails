@@ -2,12 +2,7 @@
 
 PvaultSdk - the Ruby gem for the Piiano Vault REST API
 
----
-sidebar_position: 1
-sidebar_label: Overview
-description: The Piiano Vault REST API enables you to access and manage collections, objects, tokens, users, policies, and other resources within Piiano Vault.
-slug: /
----
+The Piiano Vault REST API enables you to access and manage collections, objects, tokens, users, policies, and other resources within Piiano Vault.
 
 # Introduction
 
