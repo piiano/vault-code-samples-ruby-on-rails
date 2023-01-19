@@ -75,7 +75,9 @@ module Piiano
               props: [@property],
             })
 
-            cipher_options[:deterministic] ? tokenize_request.type = PvaultSdk::TokenType.build_from_hash("deterministic") : tokenize_request.type = PvaultSdk::TokenType.build_from_hash("randomized")
+            tokenize_request.type = PvaultSdk::TokenType.build_from_hash(
+              cipher_options[:deterministic] ? "deterministic" : "randomized"
+            )
 
             tokenize_result = @tokens_api.tokenize(@collection, @reason, [tokenize_request], opts)
             # We get an array of tokenize results. Pick the first one and return the token_id
