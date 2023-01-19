@@ -79,6 +79,8 @@ require 'pvault-sdk'
 PvaultSdk.configure do |config|
   # Configure Bearer authorization (JWT): bearerAuth
   config.access_token = 'YOUR_BEARER_TOKEN'
+  # Configure a proc to get access tokens in lieu of the static access_token configuration
+  config.access_token_getter = -> { 'YOUR TOKEN GETTER PROC' } 
 end
 
 api_instance = PvaultSdk::CollectionPropertiesApi.new
