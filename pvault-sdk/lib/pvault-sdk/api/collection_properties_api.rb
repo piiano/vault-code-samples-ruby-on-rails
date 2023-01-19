@@ -46,6 +46,11 @@ module PvaultSdk
       if @api_client.config.client_side_validation && collection.nil?
         fail ArgumentError, "Missing the required parameter 'collection' when calling CollectionPropertiesApi.add_collection_property"
       end
+      pattern = Regexp.new(/^[a-zA-Z][a-zA-Z0-9_]*$/)
+      if @api_client.config.client_side_validation && collection !~ pattern
+        fail ArgumentError, "invalid value for 'collection' when calling CollectionPropertiesApi.add_collection_property, must conform to the pattern #{pattern}."
+      end
+
       # verify the required parameter 'property' is set
       if @api_client.config.client_side_validation && property.nil?
         fail ArgumentError, "Missing the required parameter 'property' when calling CollectionPropertiesApi.add_collection_property"
@@ -124,6 +129,11 @@ module PvaultSdk
       if @api_client.config.client_side_validation && collection.nil?
         fail ArgumentError, "Missing the required parameter 'collection' when calling CollectionPropertiesApi.delete_collection_property"
       end
+      pattern = Regexp.new(/^[a-zA-Z][a-zA-Z0-9_]*$/)
+      if @api_client.config.client_side_validation && collection !~ pattern
+        fail ArgumentError, "invalid value for 'collection' when calling CollectionPropertiesApi.delete_collection_property, must conform to the pattern #{pattern}."
+      end
+
       # verify the required parameter 'property' is set
       if @api_client.config.client_side_validation && property.nil?
         fail ArgumentError, "Missing the required parameter 'property' when calling CollectionPropertiesApi.delete_collection_property"
@@ -193,6 +203,11 @@ module PvaultSdk
       if @api_client.config.client_side_validation && collection.nil?
         fail ArgumentError, "Missing the required parameter 'collection' when calling CollectionPropertiesApi.get_collection_property"
       end
+      pattern = Regexp.new(/^[a-zA-Z][a-zA-Z0-9_]*$/)
+      if @api_client.config.client_side_validation && collection !~ pattern
+        fail ArgumentError, "invalid value for 'collection' when calling CollectionPropertiesApi.get_collection_property, must conform to the pattern #{pattern}."
+      end
+
       # verify the required parameter 'property' is set
       if @api_client.config.client_side_validation && property.nil?
         fail ArgumentError, "Missing the required parameter 'property' when calling CollectionPropertiesApi.get_collection_property"
@@ -262,6 +277,11 @@ module PvaultSdk
       if @api_client.config.client_side_validation && collection.nil?
         fail ArgumentError, "Missing the required parameter 'collection' when calling CollectionPropertiesApi.list_collection_properties"
       end
+      pattern = Regexp.new(/^[a-zA-Z][a-zA-Z0-9_]*$/)
+      if @api_client.config.client_side_validation && collection !~ pattern
+        fail ArgumentError, "invalid value for 'collection' when calling CollectionPropertiesApi.list_collection_properties, must conform to the pattern #{pattern}."
+      end
+
       allowable_values = ["show_builtins"]
       if @api_client.config.client_side_validation && opts[:'options'] && !opts[:'options'].all? { |item| allowable_values.include?(item) }
         fail ArgumentError, "invalid value for \"options\", must include one of #{allowable_values}"
@@ -334,6 +354,11 @@ module PvaultSdk
       if @api_client.config.client_side_validation && collection.nil?
         fail ArgumentError, "Missing the required parameter 'collection' when calling CollectionPropertiesApi.update_collection_property"
       end
+      pattern = Regexp.new(/^[a-zA-Z][a-zA-Z0-9_]*$/)
+      if @api_client.config.client_side_validation && collection !~ pattern
+        fail ArgumentError, "invalid value for 'collection' when calling CollectionPropertiesApi.update_collection_property, must conform to the pattern #{pattern}."
+      end
+
       # verify the required parameter 'property' is set
       if @api_client.config.client_side_validation && property.nil?
         fail ArgumentError, "Missing the required parameter 'property' when calling CollectionPropertiesApi.update_collection_property"

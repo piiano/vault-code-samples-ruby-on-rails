@@ -17,11 +17,7 @@ module PvaultSdk
   class TokenMetadata
     attr_accessor :agg
 
-    # Whether the token ID can be reused.
-    attr_accessor :reusable_token_id
-
-    # Whether the tokens are reversible.
-    attr_accessor :reversible
+    attr_accessor :type
 
     # The scope of the tokens.
     attr_accessor :scope
@@ -32,12 +28,33 @@ module PvaultSdk
     # The metadata for each token.
     attr_accessor :tokens
 
+    class EnumAttributeValidator
+      attr_reader :datatype
+      attr_reader :allowable_values
+
+      def initialize(datatype, allowable_values)
+        @allowable_values = allowable_values.map do |value|
+          case datatype.to_s
+          when /Integer/i
+            value.to_i
+          when /Float/i
+            value.to_f
+          else
+            value
+          end
+        end
+      end
+
+      def valid?(value)
+        !value || allowable_values.include?(value)
+      end
+    end
+
     # Attribute mapping from ruby-style variable name to JSON key.
     def self.attribute_map
       {
         :'agg' => :'agg',
-        :'reusable_token_id' => :'reusable_token_id',
-        :'reversible' => :'reversible',
+        :'type' => :'type',
         :'scope' => :'scope',
         :'token_id' => :'token_id',
         :'tokens' => :'tokens'
@@ -53,8 +70,7 @@ module PvaultSdk
     def self.openapi_types
       {
         :'agg' => :'TokenAggregatedMetadata',
-        :'reusable_token_id' => :'Boolean',
-        :'reversible' => :'Boolean',
+        :'type' => :'TokenType',
         :'scope' => :'String',
         :'token_id' => :'String',
         :'tokens' => :'Array<TokenRefMetadata>'
@@ -86,12 +102,8 @@ module PvaultSdk
         self.agg = attributes[:'agg']
       end
 
-      if attributes.key?(:'reusable_token_id')
-        self.reusable_token_id = attributes[:'reusable_token_id']
-      end
-
-      if attributes.key?(:'reversible')
-        self.reversible = attributes[:'reversible']
+      if attributes.key?(:'type')
+        self.type = attributes[:'type']
       end
 
       if attributes.key?(:'scope')
@@ -117,12 +129,8 @@ module PvaultSdk
         invalid_properties.push('invalid value for "agg", agg cannot be nil.')
       end
 
-      if @reusable_token_id.nil?
-        invalid_properties.push('invalid value for "reusable_token_id", reusable_token_id cannot be nil.')
-      end
-
-      if @reversible.nil?
-        invalid_properties.push('invalid value for "reversible", reversible cannot be nil.')
+      if @type.nil?
+        invalid_properties.push('invalid value for "type", type cannot be nil.')
       end
 
       if @scope.nil?
@@ -144,8 +152,7 @@ module PvaultSdk
     # @return true if the model is valid
     def valid?
       return false if @agg.nil?
-      return false if @reusable_token_id.nil?
-      return false if @reversible.nil?
+      return false if @type.nil?
       return false if @scope.nil?
       return false if @token_id.nil?
       return false if @tokens.nil?
@@ -158,8 +165,7 @@ module PvaultSdk
       return true if self.equal?(o)
       self.class == o.class &&
           agg == o.agg &&
-          reusable_token_id == o.reusable_token_id &&
-          reversible == o.reversible &&
+          type == o.type &&
           scope == o.scope &&
           token_id == o.token_id &&
           tokens == o.tokens
@@ -174,7 +180,7 @@ module PvaultSdk
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [agg, reusable_token_id, reversible, scope, token_id, tokens].hash
+      [agg, type, scope, token_id, tokens].hash
     end
 
     # Builds the object from hash

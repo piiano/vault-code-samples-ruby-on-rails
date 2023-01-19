@@ -15,11 +15,14 @@ require 'time'
 
 module PvaultSdk
   class Query
+    attr_accessor :_in
+
     attr_accessor :match
 
     # Attribute mapping from ruby-style variable name to JSON key.
     def self.attribute_map
       {
+        :'_in' => :'in',
         :'match' => :'match'
       }
     end
@@ -32,6 +35,7 @@ module PvaultSdk
     # Attribute type mapping.
     def self.openapi_types
       {
+        :'_in' => :'Hash<String, Array<Object>>',
         :'match' => :'Hash<String, Object>'
       }
     end
@@ -57,6 +61,12 @@ module PvaultSdk
         h[k.to_sym] = v
       }
 
+      if attributes.key?(:'_in')
+        if (value = attributes[:'_in']).is_a?(Hash)
+          self._in = value
+        end
+      end
+
       if attributes.key?(:'match')
         if (value = attributes[:'match']).is_a?(Hash)
           self.match = value
@@ -68,17 +78,12 @@ module PvaultSdk
     # @return Array for valid properties with the reasons
     def list_invalid_properties
       invalid_properties = Array.new
-      if @match.nil?
-        invalid_properties.push('invalid value for "match", match cannot be nil.')
-      end
-
       invalid_properties
     end
 
     # Check to see if the all the properties in the model are valid
     # @return true if the model is valid
     def valid?
-      return false if @match.nil?
       true
     end
 
@@ -87,6 +92,7 @@ module PvaultSdk
     def ==(o)
       return true if self.equal?(o)
       self.class == o.class &&
+          _in == o._in &&
           match == o.match
     end
 
@@ -99,7 +105,7 @@ module PvaultSdk
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [match].hash
+      [_in, match].hash
     end
 
     # Builds the object from hash

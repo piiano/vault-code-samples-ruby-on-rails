@@ -15,23 +15,12 @@ require 'time'
 
 module PvaultSdk
   class TokenizeRequest
-    # Properties used by the format preserving template for the ID generation. The templates require these properties: - the `primary_account_number` template requires a property of type `CC_NUMBER`. The token ID is generated from this property by retaining the first six and last four digits and randomizing the remaining digits. 
-    attr_accessor :fpprops
+    attr_accessor :type
 
-    # The template used to format the generated ID. Supports:  - `primary_account_number` that generates an ID that is a valid 16-digit PAN (credit card number). If empty, the format of the ID is a UUID. 
-    attr_accessor :fptemplate
-
-    # A list of object IDs to create tokens for.
-    attr_accessor :object_ids
+    attr_accessor :object
 
     # A list of the properties to tokenize.
     attr_accessor :props
-
-    # Whether to reuse token IDs.  - When set to true, check and return an existing token in the same collection if one exists and satisfies these conditions: it is a reusable token, it was created with the same values and the same scopes.  - When set to false, or when the aforementioned token is not found, create a new reusable token.  Applies only to `VALUE` tokens. 
-    attr_accessor :reuse_token_id
-
-    # Whether the tokens can be detokenized.
-    attr_accessor :reversible
 
     # A classification for the tokens.
     attr_accessor :scope
@@ -39,8 +28,11 @@ module PvaultSdk
     # Tags to attach to the tokens. Maximum 10. 
     attr_accessor :tags
 
-    # The type of tokens to create: - `VALUE` for tokens that represent the property values as they were when the token was created. - `POINTER` for tokens that represent the property values as they are when the request to detokenize is made. 
-    attr_accessor :type
+    # Properties used by the format preserving template for the ID generation. The templates require these properties: - the `primary_account_number` template requires a property of type `CC_NUMBER`. The token ID is generated from this property by retaining the first six and last four digits and randomizing the remaining digits. 
+    attr_accessor :fpprops
+
+    # The template used to format the generated ID. Supports:  - `primary_account_number` that generates an ID that is a valid 16-digit PAN (credit card number). If empty, the format of the ID is a UUID. 
+    attr_accessor :fptemplate
 
     class EnumAttributeValidator
       attr_reader :datatype
@@ -67,15 +59,13 @@ module PvaultSdk
     # Attribute mapping from ruby-style variable name to JSON key.
     def self.attribute_map
       {
-        :'fpprops' => :'fpprops',
-        :'fptemplate' => :'fptemplate',
-        :'object_ids' => :'object_ids',
+        :'type' => :'type',
+        :'object' => :'object',
         :'props' => :'props',
-        :'reuse_token_id' => :'reuse_token_id',
-        :'reversible' => :'reversible',
         :'scope' => :'scope',
         :'tags' => :'tags',
-        :'type' => :'type'
+        :'fpprops' => :'fpprops',
+        :'fptemplate' => :'fptemplate'
       }
     end
 
@@ -87,15 +77,13 @@ module PvaultSdk
     # Attribute type mapping.
     def self.openapi_types
       {
-        :'fpprops' => :'Array<String>',
-        :'fptemplate' => :'String',
-        :'object_ids' => :'Array<String>',
+        :'type' => :'TokenType',
+        :'object' => :'InputObject',
         :'props' => :'Array<String>',
-        :'reuse_token_id' => :'Boolean',
-        :'reversible' => :'Boolean',
         :'scope' => :'String',
         :'tags' => :'Array<String>',
-        :'type' => :'String'
+        :'fpprops' => :'Array<String>',
+        :'fptemplate' => :'String'
       }
     end
 
@@ -120,38 +108,18 @@ module PvaultSdk
         h[k.to_sym] = v
       }
 
-      if attributes.key?(:'fpprops')
-        if (value = attributes[:'fpprops']).is_a?(Array)
-          self.fpprops = value
-        end
+      if attributes.key?(:'type')
+        self.type = attributes[:'type']
       end
 
-      if attributes.key?(:'fptemplate')
-        self.fptemplate = attributes[:'fptemplate']
-      end
-
-      if attributes.key?(:'object_ids')
-        if (value = attributes[:'object_ids']).is_a?(Array)
-          self.object_ids = value
-        end
+      if attributes.key?(:'object')
+        self.object = attributes[:'object']
       end
 
       if attributes.key?(:'props')
         if (value = attributes[:'props']).is_a?(Array)
           self.props = value
         end
-      end
-
-      if attributes.key?(:'reuse_token_id')
-        self.reuse_token_id = attributes[:'reuse_token_id']
-      else
-        self.reuse_token_id = false
-      end
-
-      if attributes.key?(:'reversible')
-        self.reversible = attributes[:'reversible']
-      else
-        self.reversible = true
       end
 
       if attributes.key?(:'scope')
@@ -166,8 +134,14 @@ module PvaultSdk
         end
       end
 
-      if attributes.key?(:'type')
-        self.type = attributes[:'type']
+      if attributes.key?(:'fpprops')
+        if (value = attributes[:'fpprops']).is_a?(Array)
+          self.fpprops = value
+        end
+      end
+
+      if attributes.key?(:'fptemplate')
+        self.fptemplate = attributes[:'fptemplate']
       end
     end
 
@@ -175,16 +149,16 @@ module PvaultSdk
     # @return Array for valid properties with the reasons
     def list_invalid_properties
       invalid_properties = Array.new
-      if @object_ids.nil?
-        invalid_properties.push('invalid value for "object_ids", object_ids cannot be nil.')
+      if @type.nil?
+        invalid_properties.push('invalid value for "type", type cannot be nil.')
+      end
+
+      if @object.nil?
+        invalid_properties.push('invalid value for "object", object cannot be nil.')
       end
 
       if @props.nil?
         invalid_properties.push('invalid value for "props", props cannot be nil.')
-      end
-
-      if @type.nil?
-        invalid_properties.push('invalid value for "type", type cannot be nil.')
       end
 
       invalid_properties
@@ -193,14 +167,18 @@ module PvaultSdk
     # Check to see if the all the properties in the model are valid
     # @return true if the model is valid
     def valid?
+      return false if @type.nil?
+      return false if @object.nil?
+      return false if @props.nil?
       fptemplate_validator = EnumAttributeValidator.new('String', ["primary_account_number"])
       return false unless fptemplate_validator.valid?(@fptemplate)
-      return false if @object_ids.nil?
-      return false if @props.nil?
-      return false if @type.nil?
-      type_validator = EnumAttributeValidator.new('String', ["POINTER", "VALUE"])
-      return false unless type_validator.valid?(@type)
       true
+    end
+
+    # Custom attribute writer method with validation
+    # @param [Object] tags Value to be assigned
+    def tags=(tags)
+      @tags = tags
     end
 
     # Custom attribute writer method checking allowed values (enum).
@@ -213,36 +191,18 @@ module PvaultSdk
       @fptemplate = fptemplate
     end
 
-    # Custom attribute writer method with validation
-    # @param [Object] tags Value to be assigned
-    def tags=(tags)
-      @tags = tags
-    end
-
-    # Custom attribute writer method checking allowed values (enum).
-    # @param [Object] type Object to be assigned
-    def type=(type)
-      validator = EnumAttributeValidator.new('String', ["POINTER", "VALUE"])
-      unless validator.valid?(type)
-        fail ArgumentError, "invalid value for \"type\", must be one of #{validator.allowable_values}."
-      end
-      @type = type
-    end
-
     # Checks equality by comparing each attribute.
     # @param [Object] Object to be compared
     def ==(o)
       return true if self.equal?(o)
       self.class == o.class &&
-          fpprops == o.fpprops &&
-          fptemplate == o.fptemplate &&
-          object_ids == o.object_ids &&
+          type == o.type &&
+          object == o.object &&
           props == o.props &&
-          reuse_token_id == o.reuse_token_id &&
-          reversible == o.reversible &&
           scope == o.scope &&
           tags == o.tags &&
-          type == o.type
+          fpprops == o.fpprops &&
+          fptemplate == o.fptemplate
     end
 
     # @see the `==` method
@@ -254,7 +214,7 @@ module PvaultSdk
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [fpprops, fptemplate, object_ids, props, reuse_token_id, reversible, scope, tags, type].hash
+      [type, object, props, scope, tags, fpprops, fptemplate].hash
     end
 
     # Builds the object from hash

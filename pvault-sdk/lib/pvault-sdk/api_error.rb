@@ -32,6 +32,7 @@ module PvaultSdk
         end
       else
         super arg
+        @message = arg
       end
     end
 

@@ -34,6 +34,8 @@ lib/pvault-sdk/models/auth_config.rb
 lib/pvault-sdk/models/auth_policy.rb
 lib/pvault-sdk/models/auth_role.rb
 lib/pvault-sdk/models/auth_user.rb
+lib/pvault-sdk/models/bulk_object_response.rb
+lib/pvault-sdk/models/bulk_object_result.rb
 lib/pvault-sdk/models/collection.rb
 lib/pvault-sdk/models/conf_var.rb
 lib/pvault-sdk/models/conf_var_value.rb
@@ -50,7 +52,9 @@ lib/pvault-sdk/models/config_service.rb
 lib/pvault-sdk/models/config_tls.rb
 lib/pvault-sdk/models/detokenized_token.rb
 lib/pvault-sdk/models/gc_deletion_count.rb
+lib/pvault-sdk/models/hash_object_request.rb
 lib/pvault-sdk/models/health.rb
+lib/pvault-sdk/models/input_object.rb
 lib/pvault-sdk/models/kms_status.rb
 lib/pvault-sdk/models/license.rb
 lib/pvault-sdk/models/object.rb
@@ -66,6 +70,7 @@ lib/pvault-sdk/models/rest_http_error.rb
 lib/pvault-sdk/models/token_aggregated_metadata.rb
 lib/pvault-sdk/models/token_metadata.rb
 lib/pvault-sdk/models/token_ref_metadata.rb
+lib/pvault-sdk/models/token_type.rb
 lib/pvault-sdk/models/token_value.rb
 lib/pvault-sdk/models/tokenize_request.rb
 lib/pvault-sdk/models/transformation.rb

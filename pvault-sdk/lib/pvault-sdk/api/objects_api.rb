@@ -52,6 +52,11 @@ module PvaultSdk
       if @api_client.config.client_side_validation && collection.nil?
         fail ArgumentError, "Missing the required parameter 'collection' when calling ObjectsApi.add_object"
       end
+      pattern = Regexp.new(/^[a-zA-Z][a-zA-Z0-9_]*$/)
+      if @api_client.config.client_side_validation && collection !~ pattern
+        fail ArgumentError, "invalid value for 'collection' when calling ObjectsApi.add_object, must conform to the pattern #{pattern}."
+      end
+
       # verify the required parameter 'reason' is set
       if @api_client.config.client_side_validation && reason.nil?
         fail ArgumentError, "Missing the required parameter 'reason' when calling ObjectsApi.add_object"
@@ -119,32 +124,137 @@ module PvaultSdk
       return data, status_code, headers
     end
 
+    # Add objects (bulk)
+    # Adds objects to a collection. The request must include all the non-nullable properties for each object, as defined by the collection schema. Use the [list collection properties](/api/operations/list-collection-properties) operation to check the collection schema.  If any object add fails, the operation fails and no objects are added.  The maximum number of objects that can be deleted in one operation is determined by the [`PVAULT_SERVICE_MAX_PAGE_SIZE` environment variable](/guides/configure/environment-variables#service-and-features).  See the [add object](/api/operations/add-object) operation to add an object to a collection.  The role performing this operation must have both of the following: - The `CapDataWriter` capability. - For each object in the request, at least one allowing policy and no denying policies for the `write` operation for each object property.  See [identity and access management](/data-security/identity-and-access-management) for more information about how capabilities are used to control access to operations and policies are used to control access to data. 
+    # @param collection [String] The name of the collection to add the objects to.
+    # @param reason [String] Details of the reason for requesting the property. The default is set when no access reason is provided and PVAULT_SERVICE_FORCE_ACCESS_REASON is false.
+    # @param request_body [Array<Hash>] List of objects to add. The order of the objects in this array is preserved in the response. 
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :adhoc_reason An ad-hoc reason for accessing the Vault data.
+    # @option opts [Boolean] :reload_cache Reloads the cache before the action.
+    # @option opts [String] :expiration_secs Object expiration time in seconds, cannot be set to 0. If not set, the default value is used. See the &#x60;PVAULT_EXPIRATION_ASSOCIATED_OBJECTS&#x60; and &#x60;PVAULT_EXPIRATION_UNASSOCIATED_OBJECTS&#x60; environment variables.
+    # @return [BulkObjectResponse]
+    def add_objects(collection, reason, request_body, opts = {})
+      data, _status_code, _headers = add_objects_with_http_info(collection, reason, request_body, opts)
+      data
+    end
+
+    # Add objects (bulk)
+    # Adds objects to a collection. The request must include all the non-nullable properties for each object, as defined by the collection schema. Use the [list collection properties](/api/operations/list-collection-properties) operation to check the collection schema.  If any object add fails, the operation fails and no objects are added.  The maximum number of objects that can be deleted in one operation is determined by the [&#x60;PVAULT_SERVICE_MAX_PAGE_SIZE&#x60; environment variable](/guides/configure/environment-variables#service-and-features).  See the [add object](/api/operations/add-object) operation to add an object to a collection.  The role performing this operation must have both of the following: - The &#x60;CapDataWriter&#x60; capability. - For each object in the request, at least one allowing policy and no denying policies for the &#x60;write&#x60; operation for each object property.  See [identity and access management](/data-security/identity-and-access-management) for more information about how capabilities are used to control access to operations and policies are used to control access to data. 
+    # @param collection [String] The name of the collection to add the objects to.
+    # @param reason [String] Details of the reason for requesting the property. The default is set when no access reason is provided and PVAULT_SERVICE_FORCE_ACCESS_REASON is false.
+    # @param request_body [Array<Hash>] List of objects to add. The order of the objects in this array is preserved in the response. 
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :adhoc_reason An ad-hoc reason for accessing the Vault data.
+    # @option opts [Boolean] :reload_cache Reloads the cache before the action.
+    # @option opts [String] :expiration_secs Object expiration time in seconds, cannot be set to 0. If not set, the default value is used. See the &#x60;PVAULT_EXPIRATION_ASSOCIATED_OBJECTS&#x60; and &#x60;PVAULT_EXPIRATION_UNASSOCIATED_OBJECTS&#x60; environment variables.
+    # @return [Array<(BulkObjectResponse, Integer, Hash)>] BulkObjectResponse data, response status code and response headers
+    def add_objects_with_http_info(collection, reason, request_body, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: ObjectsApi.add_objects ...'
+      end
+      # verify the required parameter 'collection' is set
+      if @api_client.config.client_side_validation && collection.nil?
+        fail ArgumentError, "Missing the required parameter 'collection' when calling ObjectsApi.add_objects"
+      end
+      pattern = Regexp.new(/^[a-zA-Z][a-zA-Z0-9_]*$/)
+      if @api_client.config.client_side_validation && collection !~ pattern
+        fail ArgumentError, "invalid value for 'collection' when calling ObjectsApi.add_objects, must conform to the pattern #{pattern}."
+      end
+
+      # verify the required parameter 'reason' is set
+      if @api_client.config.client_side_validation && reason.nil?
+        fail ArgumentError, "Missing the required parameter 'reason' when calling ObjectsApi.add_objects"
+      end
+      # verify enum value
+      allowable_values = ["AppFunctionality", "Analytics", "Notifications", "Marketing", "ThirdPartyMarketing", "FraudPreventionSecurityAndCompliance", "AccountManagement", "Maintenance", "DataSubjectRequest", "Other"]
+      if @api_client.config.client_side_validation && !allowable_values.include?(reason)
+        fail ArgumentError, "invalid value for \"reason\", must be one of #{allowable_values}"
+      end
+      # verify the required parameter 'request_body' is set
+      if @api_client.config.client_side_validation && request_body.nil?
+        fail ArgumentError, "Missing the required parameter 'request_body' when calling ObjectsApi.add_objects"
+      end
+      pattern = Regexp.new(/^[0-9]*$/)
+      if @api_client.config.client_side_validation && !opts[:'expiration_secs'].nil? && opts[:'expiration_secs'] !~ pattern
+        fail ArgumentError, "invalid value for 'opts[:\"expiration_secs\"]' when calling ObjectsApi.add_objects, must conform to the pattern #{pattern}."
+      end
+
+      # resource path
+      local_var_path = '/api/pvlt/1.0/data/collections/{collection}/bulk/objects'.sub('{' + 'collection' + '}', CGI.escape(collection.to_s))
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+      query_params[:'reason'] = reason
+      query_params[:'adhoc_reason'] = opts[:'adhoc_reason'] if !opts[:'adhoc_reason'].nil?
+      query_params[:'reload_cache'] = opts[:'reload_cache'] if !opts[:'reload_cache'].nil?
+      query_params[:'expiration_secs'] = opts[:'expiration_secs'] if !opts[:'expiration_secs'].nil?
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json'])
+      # HTTP header 'Content-Type'
+      content_type = @api_client.select_header_content_type(['application/json'])
+      if !content_type.nil?
+          header_params['Content-Type'] = content_type
+      end
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body] || @api_client.object_to_http_body(request_body)
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'BulkObjectResponse'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['bearerAuth']
+
+      new_options = opts.merge(
+        :operation => :"ObjectsApi.add_objects",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:POST, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: ObjectsApi#add_objects\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
     # Delete object
     # Deletes an object from a collection. This operation is irreversible.  The role performing this operation must have both of the following: - The `CapDataWriter` capability. - At least one allowing policy and no denying policies for the `delete` operation for each of the properties defined for   the collection specified in the call.     See [identity and access management](/data-security/identity-and-access-management) for more information about how capabilities are used to control access to operations and policies are used to control access to data.
     # @param collection [String] The name of the collection containing the object.
-    # @param ids [Array<String>] A comma-separated list of object IDs.
+    # @param id [String] The ID of the object.
     # @param reason [String] Details of the reason for requesting the property. The default is set when no access reason is provided and PVAULT_SERVICE_FORCE_ACCESS_REASON is false.
     # @param [Hash] opts the optional parameters
     # @option opts [Array<String>] :options Options for the operation. Options include: - &#x60;archived&#x60; – whether to delete only archived objects. If not specified, delete only active objects. 
     # @option opts [String] :adhoc_reason An ad-hoc reason for accessing the Vault data.
     # @option opts [Boolean] :reload_cache Reloads the cache before the action.
     # @return [nil]
-    def delete_object_by_id(collection, ids, reason, opts = {})
-      delete_object_by_id_with_http_info(collection, ids, reason, opts)
+    def delete_object_by_id(collection, id, reason, opts = {})
+      delete_object_by_id_with_http_info(collection, id, reason, opts)
       nil
     end
 
     # Delete object
     # Deletes an object from a collection. This operation is irreversible.  The role performing this operation must have both of the following: - The &#x60;CapDataWriter&#x60; capability. - At least one allowing policy and no denying policies for the &#x60;delete&#x60; operation for each of the properties defined for   the collection specified in the call.     See [identity and access management](/data-security/identity-and-access-management) for more information about how capabilities are used to control access to operations and policies are used to control access to data.
     # @param collection [String] The name of the collection containing the object.
-    # @param ids [Array<String>] A comma-separated list of object IDs.
+    # @param id [String] The ID of the object.
     # @param reason [String] Details of the reason for requesting the property. The default is set when no access reason is provided and PVAULT_SERVICE_FORCE_ACCESS_REASON is false.
     # @param [Hash] opts the optional parameters
     # @option opts [Array<String>] :options Options for the operation. Options include: - &#x60;archived&#x60; – whether to delete only archived objects. If not specified, delete only active objects. 
     # @option opts [String] :adhoc_reason An ad-hoc reason for accessing the Vault data.
     # @option opts [Boolean] :reload_cache Reloads the cache before the action.
     # @return [Array<(nil, Integer, Hash)>] nil, response status code and response headers
-    def delete_object_by_id_with_http_info(collection, ids, reason, opts = {})
+    def delete_object_by_id_with_http_info(collection, id, reason, opts = {})
       if @api_client.config.debugging
         @api_client.config.logger.debug 'Calling API: ObjectsApi.delete_object_by_id ...'
       end
@@ -152,14 +262,15 @@ module PvaultSdk
       if @api_client.config.client_side_validation && collection.nil?
         fail ArgumentError, "Missing the required parameter 'collection' when calling ObjectsApi.delete_object_by_id"
       end
-      # verify the required parameter 'ids' is set
-      if @api_client.config.client_side_validation && ids.nil?
-        fail ArgumentError, "Missing the required parameter 'ids' when calling ObjectsApi.delete_object_by_id"
-      end
-      if @api_client.config.client_side_validation && ids.length < 1
-        fail ArgumentError, 'invalid value for "ids" when calling ObjectsApi.delete_object_by_id, number of items must be greater than or equal to 1.'
+      pattern = Regexp.new(/^[a-zA-Z][a-zA-Z0-9_]*$/)
+      if @api_client.config.client_side_validation && collection !~ pattern
+        fail ArgumentError, "invalid value for 'collection' when calling ObjectsApi.delete_object_by_id, must conform to the pattern #{pattern}."
       end
 
+      # verify the required parameter 'id' is set
+      if @api_client.config.client_side_validation && id.nil?
+        fail ArgumentError, "Missing the required parameter 'id' when calling ObjectsApi.delete_object_by_id"
+      end
       # verify the required parameter 'reason' is set
       if @api_client.config.client_side_validation && reason.nil?
         fail ArgumentError, "Missing the required parameter 'reason' when calling ObjectsApi.delete_object_by_id"
@@ -169,12 +280,15 @@ module PvaultSdk
       if @api_client.config.client_side_validation && !allowable_values.include?(reason)
         fail ArgumentError, "invalid value for \"reason\", must be one of #{allowable_values}"
       end
+      allowable_values = ["archived"]
+      if @api_client.config.client_side_validation && opts[:'options'] && !opts[:'options'].all? { |item| allowable_values.include?(item) }
+        fail ArgumentError, "invalid value for \"options\", must include one of #{allowable_values}"
+      end
       # resource path
-      local_var_path = '/api/pvlt/1.0/data/collections/{collection}/objects'.sub('{' + 'collection' + '}', CGI.escape(collection.to_s))
+      local_var_path = '/api/pvlt/1.0/data/collections/{collection}/objects/{id}'.sub('{' + 'collection' + '}', CGI.escape(collection.to_s)).sub('{' + 'id' + '}', CGI.escape(id.to_s))
 
       # query parameters
       query_params = opts[:query_params] || {}
-      query_params[:'ids'] = @api_client.build_collection_param(ids, :multi)
       query_params[:'reason'] = reason
       query_params[:'options'] = @api_client.build_collection_param(opts[:'options'], :multi) if !opts[:'options'].nil?
       query_params[:'adhoc_reason'] = opts[:'adhoc_reason'] if !opts[:'adhoc_reason'].nil?
@@ -214,72 +328,175 @@ module PvaultSdk
       return data, status_code, headers
     end
 
-    # Get objects property
-    # Returns a [paginated list](/api/api-pagination) of the values of a property for objects in a collection.  The role performing this operation must have both of the following: - The `CapDataReader` capability. - At least one allowing policy and no denying policies for the `read` operation for the property and the and the   collection requested in the call.  See [identity and access management](/data-security/identity-and-access-management) for more information about how capabilities are used to control access to operations and policies are used to control access to data.
-    # @param reason [String] Details of the reason for requesting the property. The default is set when no access reason is provided and PVAULT_SERVICE_FORCE_ACCESS_REASON is false.
+    # Delete objects (bulk)
+    # Deletes objects from a collection. This operation is irreversible.  If any object delete fails, the operation fails and no objects are deleted.  The maximum number of objects that can be deleted in one operation is determined by the [`PVAULT_SERVICE_MAX_PAGE_SIZE` environment variable](/guides/configure/environment-variables#service-and-features).   The role performing this operation must have both of the following: - The `CapDataWriter` capability. - At least one allowing policy and no denying policies for the `delete` operation for each of the properties defined for   the collection specified in the call.  See [identity and access management](/data-security/identity-and-access-management) for more information about how capabilities are used to control access to operations and policies are used to control access to data. 
     # @param collection [String] The name of the collection containing the objects.
-    # @param property [String] The required property.
+    # @param reason [String] Details of the reason for requesting the property. The default is set when no access reason is provided and PVAULT_SERVICE_FORCE_ACCESS_REASON is false.
     # @param [Hash] opts the optional parameters
+    # @option opts [Array<String>] :options Options for the operation. Options include: - &#x60;archived&#x60; – whether to delete only archived objects. If not specified, deletes only active objects. 
     # @option opts [String] :adhoc_reason An ad-hoc reason for accessing the Vault data.
     # @option opts [Boolean] :reload_cache Reloads the cache before the action.
-    # @option opts [Integer] :page_size The maximum number of items to return in this request. If not specified, the default value is used. The default value is the value specified in the environment variable &#x60;PVAULT_SERVICE_DEFAULT_PAGE_SIZE&#x60;. The value must not exceed the value specified in the environment variable &#x60;PVAULT_SERVICE_DEFAULT_PAGE_SIZE&#x60;
-    # @option opts [String] :cursor The cursor represents the state of consecutive queries for the same request parameters. In the first call, the cursor may be omitted or specified as an empty string. In consecutive calls, it should be set to the value of the cursor field of the objectFieldsPage returned by the previous call. Note: when the &#x60;id&#x60; is specified, paging is not supported. In this case, if the number of &#x60;id&#x60; values specified exceeds the maximum page size, the method returns 400 (BAD REQUEST).
-    # @option opts [String] :x_trans_param Extra parameter to pass on to the transformations.
-    # @option opts [Array<String>] :options Options for the operation. Options include: - &#x60;archived&#x60; – whether to get only archived objects. If not specified, get only active objects. 
-    # @option opts [Array<String>] :ids A comma-separated list of object IDs
-    # @return [ObjectFieldsPage]
-    def get_objects_property(reason, collection, property, opts = {})
-      data, _status_code, _headers = get_objects_property_with_http_info(reason, collection, property, opts)
+    # @option opts [Array<ObjectID>] :object_id List of objects to delete. The order of the objects in the array is preserved in the response. 
+    # @return [BulkObjectResponse]
+    def delete_objects(collection, reason, opts = {})
+      data, _status_code, _headers = delete_objects_with_http_info(collection, reason, opts)
       data
     end
 
-    # Get objects property
-    # Returns a [paginated list](/api/api-pagination) of the values of a property for objects in a collection.  The role performing this operation must have both of the following: - The &#x60;CapDataReader&#x60; capability. - At least one allowing policy and no denying policies for the &#x60;read&#x60; operation for the property and the and the   collection requested in the call.  See [identity and access management](/data-security/identity-and-access-management) for more information about how capabilities are used to control access to operations and policies are used to control access to data.
-    # @param reason [String] Details of the reason for requesting the property. The default is set when no access reason is provided and PVAULT_SERVICE_FORCE_ACCESS_REASON is false.
+    # Delete objects (bulk)
+    # Deletes objects from a collection. This operation is irreversible.  If any object delete fails, the operation fails and no objects are deleted.  The maximum number of objects that can be deleted in one operation is determined by the [&#x60;PVAULT_SERVICE_MAX_PAGE_SIZE&#x60; environment variable](/guides/configure/environment-variables#service-and-features).   The role performing this operation must have both of the following: - The &#x60;CapDataWriter&#x60; capability. - At least one allowing policy and no denying policies for the &#x60;delete&#x60; operation for each of the properties defined for   the collection specified in the call.  See [identity and access management](/data-security/identity-and-access-management) for more information about how capabilities are used to control access to operations and policies are used to control access to data. 
     # @param collection [String] The name of the collection containing the objects.
-    # @param property [String] The required property.
+    # @param reason [String] Details of the reason for requesting the property. The default is set when no access reason is provided and PVAULT_SERVICE_FORCE_ACCESS_REASON is false.
     # @param [Hash] opts the optional parameters
+    # @option opts [Array<String>] :options Options for the operation. Options include: - &#x60;archived&#x60; – whether to delete only archived objects. If not specified, deletes only active objects. 
     # @option opts [String] :adhoc_reason An ad-hoc reason for accessing the Vault data.
     # @option opts [Boolean] :reload_cache Reloads the cache before the action.
-    # @option opts [Integer] :page_size The maximum number of items to return in this request. If not specified, the default value is used. The default value is the value specified in the environment variable &#x60;PVAULT_SERVICE_DEFAULT_PAGE_SIZE&#x60;. The value must not exceed the value specified in the environment variable &#x60;PVAULT_SERVICE_DEFAULT_PAGE_SIZE&#x60;
-    # @option opts [String] :cursor The cursor represents the state of consecutive queries for the same request parameters. In the first call, the cursor may be omitted or specified as an empty string. In consecutive calls, it should be set to the value of the cursor field of the objectFieldsPage returned by the previous call. Note: when the &#x60;id&#x60; is specified, paging is not supported. In this case, if the number of &#x60;id&#x60; values specified exceeds the maximum page size, the method returns 400 (BAD REQUEST).
-    # @option opts [String] :x_trans_param Extra parameter to pass on to the transformations.
-    # @option opts [Array<String>] :options Options for the operation. Options include: - &#x60;archived&#x60; – whether to get only archived objects. If not specified, get only active objects. 
-    # @option opts [Array<String>] :ids A comma-separated list of object IDs
-    # @return [Array<(ObjectFieldsPage, Integer, Hash)>] ObjectFieldsPage data, response status code and response headers
-    def get_objects_property_with_http_info(reason, collection, property, opts = {})
+    # @option opts [Array<ObjectID>] :object_id List of objects to delete. The order of the objects in the array is preserved in the response. 
+    # @return [Array<(BulkObjectResponse, Integer, Hash)>] BulkObjectResponse data, response status code and response headers
+    def delete_objects_with_http_info(collection, reason, opts = {})
       if @api_client.config.debugging
-        @api_client.config.logger.debug 'Calling API: ObjectsApi.get_objects_property ...'
+        @api_client.config.logger.debug 'Calling API: ObjectsApi.delete_objects ...'
       end
+      # verify the required parameter 'collection' is set
+      if @api_client.config.client_side_validation && collection.nil?
+        fail ArgumentError, "Missing the required parameter 'collection' when calling ObjectsApi.delete_objects"
+      end
+      pattern = Regexp.new(/^[a-zA-Z][a-zA-Z0-9_]*$/)
+      if @api_client.config.client_side_validation && collection !~ pattern
+        fail ArgumentError, "invalid value for 'collection' when calling ObjectsApi.delete_objects, must conform to the pattern #{pattern}."
+      end
+
       # verify the required parameter 'reason' is set
       if @api_client.config.client_side_validation && reason.nil?
-        fail ArgumentError, "Missing the required parameter 'reason' when calling ObjectsApi.get_objects_property"
+        fail ArgumentError, "Missing the required parameter 'reason' when calling ObjectsApi.delete_objects"
       end
       # verify enum value
       allowable_values = ["AppFunctionality", "Analytics", "Notifications", "Marketing", "ThirdPartyMarketing", "FraudPreventionSecurityAndCompliance", "AccountManagement", "Maintenance", "DataSubjectRequest", "Other"]
       if @api_client.config.client_side_validation && !allowable_values.include?(reason)
         fail ArgumentError, "invalid value for \"reason\", must be one of #{allowable_values}"
       end
-      # verify the required parameter 'collection' is set
-      if @api_client.config.client_side_validation && collection.nil?
-        fail ArgumentError, "Missing the required parameter 'collection' when calling ObjectsApi.get_objects_property"
-      end
-      # verify the required parameter 'property' is set
-      if @api_client.config.client_side_validation && property.nil?
-        fail ArgumentError, "Missing the required parameter 'property' when calling ObjectsApi.get_objects_property"
+      allowable_values = ["archived"]
+      if @api_client.config.client_side_validation && opts[:'options'] && !opts[:'options'].all? { |item| allowable_values.include?(item) }
+        fail ArgumentError, "invalid value for \"options\", must include one of #{allowable_values}"
       end
       # resource path
-      local_var_path = '/api/pvlt/1.0/data/collections/{collection}/properties/{property}'.sub('{' + 'collection' + '}', CGI.escape(collection.to_s)).sub('{' + 'property' + '}', CGI.escape(property.to_s))
+      local_var_path = '/api/pvlt/1.0/data/collections/{collection}/bulk/objects'.sub('{' + 'collection' + '}', CGI.escape(collection.to_s))
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+      query_params[:'reason'] = reason
+      query_params[:'options'] = @api_client.build_collection_param(opts[:'options'], :multi) if !opts[:'options'].nil?
+      query_params[:'adhoc_reason'] = opts[:'adhoc_reason'] if !opts[:'adhoc_reason'].nil?
+      query_params[:'reload_cache'] = opts[:'reload_cache'] if !opts[:'reload_cache'].nil?
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json'])
+      # HTTP header 'Content-Type'
+      content_type = @api_client.select_header_content_type(['application/json'])
+      if !content_type.nil?
+          header_params['Content-Type'] = content_type
+      end
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body] || @api_client.object_to_http_body(opts[:'object_id'])
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'BulkObjectResponse'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['bearerAuth']
+
+      new_options = opts.merge(
+        :operation => :"ObjectsApi.delete_objects",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:DELETE, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: ObjectsApi#delete_objects\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
+    # Get object
+    # Returns an object from a collection with all or a subset of object property values.  The role performing this operation must have both of the following: - The `CapDataReader` capability. - At least one allowing policy and no denying policies for the `read` operation for each of the properties and the   collection requested in the call.  See [identity and access management](/data-security/identity-and-access-management) for more information about how capabilities are used to control access to operations and policies are used to control access to data.  **Warning**: Use of the `unsafe` option, to include all object property values, may expose more private information than is required, use with caution.
+    # @param collection [String] The name of the collection containing the object.
+    # @param id [String] The ID of the object.
+    # @param reason [String] Details of the reason for requesting the property. The default is set when no access reason is provided and PVAULT_SERVICE_FORCE_ACCESS_REASON is false.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :adhoc_reason An ad-hoc reason for accessing the Vault data.
+    # @option opts [Boolean] :reload_cache Reloads the cache before the action.
+    # @option opts [String] :x_trans_param Extra parameter to pass on to the transformations.
+    # @option opts [Array<String>] :options Options for the operation. Options include: - &#x60;archived&#x60; – whether to list only archived objects. If not specified, list only active objects. - &#x60;show_builtins&#x60; – show built-in properties, can only be specified with &#x60;unsafe&#x60;. - &#x60;unsafe&#x60; – fetch all the properties, cannot be specified with &#x60;props&#x60;. 
+    # @option opts [Array<String>] :props The list of property names and transformations. To include multiple names and transformation bindings, provide a comma-separated list. For example, &#x60;props&#x3D;first_name,last_name&#x60;. If the &#x60;unsafe&#x60; option is used, must be empty.
+    # @return [Hash<String, Object>]
+    def get_object_by_id(collection, id, reason, opts = {})
+      data, _status_code, _headers = get_object_by_id_with_http_info(collection, id, reason, opts)
+      data
+    end
+
+    # Get object
+    # Returns an object from a collection with all or a subset of object property values.  The role performing this operation must have both of the following: - The &#x60;CapDataReader&#x60; capability. - At least one allowing policy and no denying policies for the &#x60;read&#x60; operation for each of the properties and the   collection requested in the call.  See [identity and access management](/data-security/identity-and-access-management) for more information about how capabilities are used to control access to operations and policies are used to control access to data.  **Warning**: Use of the &#x60;unsafe&#x60; option, to include all object property values, may expose more private information than is required, use with caution.
+    # @param collection [String] The name of the collection containing the object.
+    # @param id [String] The ID of the object.
+    # @param reason [String] Details of the reason for requesting the property. The default is set when no access reason is provided and PVAULT_SERVICE_FORCE_ACCESS_REASON is false.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :adhoc_reason An ad-hoc reason for accessing the Vault data.
+    # @option opts [Boolean] :reload_cache Reloads the cache before the action.
+    # @option opts [String] :x_trans_param Extra parameter to pass on to the transformations.
+    # @option opts [Array<String>] :options Options for the operation. Options include: - &#x60;archived&#x60; – whether to list only archived objects. If not specified, list only active objects. - &#x60;show_builtins&#x60; – show built-in properties, can only be specified with &#x60;unsafe&#x60;. - &#x60;unsafe&#x60; – fetch all the properties, cannot be specified with &#x60;props&#x60;. 
+    # @option opts [Array<String>] :props The list of property names and transformations. To include multiple names and transformation bindings, provide a comma-separated list. For example, &#x60;props&#x3D;first_name,last_name&#x60;. If the &#x60;unsafe&#x60; option is used, must be empty.
+    # @return [Array<(Hash<String, Object>, Integer, Hash)>] Hash<String, Object> data, response status code and response headers
+    def get_object_by_id_with_http_info(collection, id, reason, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: ObjectsApi.get_object_by_id ...'
+      end
+      # verify the required parameter 'collection' is set
+      if @api_client.config.client_side_validation && collection.nil?
+        fail ArgumentError, "Missing the required parameter 'collection' when calling ObjectsApi.get_object_by_id"
+      end
+      pattern = Regexp.new(/^[a-zA-Z][a-zA-Z0-9_]*$/)
+      if @api_client.config.client_side_validation && collection !~ pattern
+        fail ArgumentError, "invalid value for 'collection' when calling ObjectsApi.get_object_by_id, must conform to the pattern #{pattern}."
+      end
+
+      # verify the required parameter 'id' is set
+      if @api_client.config.client_side_validation && id.nil?
+        fail ArgumentError, "Missing the required parameter 'id' when calling ObjectsApi.get_object_by_id"
+      end
+      # verify the required parameter 'reason' is set
+      if @api_client.config.client_side_validation && reason.nil?
+        fail ArgumentError, "Missing the required parameter 'reason' when calling ObjectsApi.get_object_by_id"
+      end
+      # verify enum value
+      allowable_values = ["AppFunctionality", "Analytics", "Notifications", "Marketing", "ThirdPartyMarketing", "FraudPreventionSecurityAndCompliance", "AccountManagement", "Maintenance", "DataSubjectRequest", "Other"]
+      if @api_client.config.client_side_validation && !allowable_values.include?(reason)
+        fail ArgumentError, "invalid value for \"reason\", must be one of #{allowable_values}"
+      end
+      allowable_values = ["unsafe", "show_builtins", "archived"]
+      if @api_client.config.client_side_validation && opts[:'options'] && !opts[:'options'].all? { |item| allowable_values.include?(item) }
+        fail ArgumentError, "invalid value for \"options\", must include one of #{allowable_values}"
+      end
+      # resource path
+      local_var_path = '/api/pvlt/1.0/data/collections/{collection}/objects/{id}'.sub('{' + 'collection' + '}', CGI.escape(collection.to_s)).sub('{' + 'id' + '}', CGI.escape(id.to_s))
 
       # query parameters
       query_params = opts[:query_params] || {}
       query_params[:'reason'] = reason
       query_params[:'adhoc_reason'] = opts[:'adhoc_reason'] if !opts[:'adhoc_reason'].nil?
       query_params[:'reload_cache'] = opts[:'reload_cache'] if !opts[:'reload_cache'].nil?
-      query_params[:'page_size'] = opts[:'page_size'] if !opts[:'page_size'].nil?
-      query_params[:'cursor'] = opts[:'cursor'] if !opts[:'cursor'].nil?
       query_params[:'options'] = @api_client.build_collection_param(opts[:'options'], :multi) if !opts[:'options'].nil?
-      query_params[:'ids'] = @api_client.build_collection_param(opts[:'ids'], :multi) if !opts[:'ids'].nil?
+      query_params[:'props'] = @api_client.build_collection_param(opts[:'props'], :multi) if !opts[:'props'].nil?
 
       # header parameters
       header_params = opts[:header_params] || {}
@@ -294,13 +511,13 @@ module PvaultSdk
       post_body = opts[:debug_body]
 
       # return_type
-      return_type = opts[:debug_return_type] || 'ObjectFieldsPage'
+      return_type = opts[:debug_return_type] || 'Hash<String, Object>'
 
       # auth_names
       auth_names = opts[:debug_auth_names] || ['bearerAuth']
 
       new_options = opts.merge(
-        :operation => :"ObjectsApi.get_objects_property",
+        :operation => :"ObjectsApi.get_object_by_id",
         :header_params => header_params,
         :query_params => query_params,
         :form_params => form_params,
@@ -311,7 +528,104 @@ module PvaultSdk
 
       data, status_code, headers = @api_client.call_api(:GET, local_var_path, new_options)
       if @api_client.config.debugging
-        @api_client.config.logger.debug "API called: ObjectsApi#get_objects_property\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+        @api_client.config.logger.debug "API called: ObjectsApi#get_object_by_id\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
+    # Hash objects
+    # Creates a deterministic hash based on an object's property values, collection, and scope.  This operation is similar to using the [tokenize](/api/operations/tokenize) operation for a token of type `deterministic`. The hash value is identical to the token ID that is provided for the same combination of collection, object, property values, and scope. However, unlike the token, this hash is not stored in Vault's storage and, as such, cannot be detokenized, searched, or invalidated.
+    # @param collection [String] The name of the collection containing the objects.
+    # @param reason [String] Details of the reason for requesting the property. The default is set when no access reason is provided and PVAULT_SERVICE_FORCE_ACCESS_REASON is false.
+    # @param hash_object_request [Array<HashObjectRequest>] Details of the hashing request.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :adhoc_reason An ad-hoc reason for accessing the Vault data.
+    # @option opts [Boolean] :reload_cache Reloads the cache before the action.
+    # @return [Array<Array<TokenValue>>]
+    def hash_objects(collection, reason, hash_object_request, opts = {})
+      data, _status_code, _headers = hash_objects_with_http_info(collection, reason, hash_object_request, opts)
+      data
+    end
+
+    # Hash objects
+    # Creates a deterministic hash based on an object&#39;s property values, collection, and scope.  This operation is similar to using the [tokenize](/api/operations/tokenize) operation for a token of type &#x60;deterministic&#x60;. The hash value is identical to the token ID that is provided for the same combination of collection, object, property values, and scope. However, unlike the token, this hash is not stored in Vault&#39;s storage and, as such, cannot be detokenized, searched, or invalidated.
+    # @param collection [String] The name of the collection containing the objects.
+    # @param reason [String] Details of the reason for requesting the property. The default is set when no access reason is provided and PVAULT_SERVICE_FORCE_ACCESS_REASON is false.
+    # @param hash_object_request [Array<HashObjectRequest>] Details of the hashing request.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :adhoc_reason An ad-hoc reason for accessing the Vault data.
+    # @option opts [Boolean] :reload_cache Reloads the cache before the action.
+    # @return [Array<(Array<Array<TokenValue>>, Integer, Hash)>] Array<Array<TokenValue>> data, response status code and response headers
+    def hash_objects_with_http_info(collection, reason, hash_object_request, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: ObjectsApi.hash_objects ...'
+      end
+      # verify the required parameter 'collection' is set
+      if @api_client.config.client_side_validation && collection.nil?
+        fail ArgumentError, "Missing the required parameter 'collection' when calling ObjectsApi.hash_objects"
+      end
+      pattern = Regexp.new(/^[a-zA-Z][a-zA-Z0-9_]*$/)
+      if @api_client.config.client_side_validation && collection !~ pattern
+        fail ArgumentError, "invalid value for 'collection' when calling ObjectsApi.hash_objects, must conform to the pattern #{pattern}."
+      end
+
+      # verify the required parameter 'reason' is set
+      if @api_client.config.client_side_validation && reason.nil?
+        fail ArgumentError, "Missing the required parameter 'reason' when calling ObjectsApi.hash_objects"
+      end
+      # verify enum value
+      allowable_values = ["AppFunctionality", "Analytics", "Notifications", "Marketing", "ThirdPartyMarketing", "FraudPreventionSecurityAndCompliance", "AccountManagement", "Maintenance", "DataSubjectRequest", "Other"]
+      if @api_client.config.client_side_validation && !allowable_values.include?(reason)
+        fail ArgumentError, "invalid value for \"reason\", must be one of #{allowable_values}"
+      end
+      # verify the required parameter 'hash_object_request' is set
+      if @api_client.config.client_side_validation && hash_object_request.nil?
+        fail ArgumentError, "Missing the required parameter 'hash_object_request' when calling ObjectsApi.hash_objects"
+      end
+      # resource path
+      local_var_path = '/api/pvlt/1.0/data/collections/{collection}/hash/objects'.sub('{' + 'collection' + '}', CGI.escape(collection.to_s))
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+      query_params[:'reason'] = reason
+      query_params[:'adhoc_reason'] = opts[:'adhoc_reason'] if !opts[:'adhoc_reason'].nil?
+      query_params[:'reload_cache'] = opts[:'reload_cache'] if !opts[:'reload_cache'].nil?
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json'])
+      # HTTP header 'Content-Type'
+      content_type = @api_client.select_header_content_type(['application/json'])
+      if !content_type.nil?
+          header_params['Content-Type'] = content_type
+      end
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body] || @api_client.object_to_http_body(hash_object_request)
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'Array<Array<TokenValue>>'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['bearerAuth']
+
+      new_options = opts.merge(
+        :operation => :"ObjectsApi.hash_objects",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:POST, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: ObjectsApi#hash_objects\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
       end
       return data, status_code, headers
     end
@@ -327,7 +641,7 @@ module PvaultSdk
     # @option opts [String] :cursor The cursor represents the state of consecutive queries for the same request parameters. In the first call, the cursor may be omitted or specified as an empty string. In consecutive calls, it should be set to the value of the cursor field of the objectFieldsPage returned by the previous call. Note: when the &#x60;id&#x60; is specified, paging is not supported. In this case, if the number of &#x60;id&#x60; values specified exceeds the maximum page size, the method returns 400 (BAD REQUEST).
     # @option opts [String] :x_trans_param Extra parameter to pass on to the transformations.
     # @option opts [Array<String>] :ids A comma-separated list of object IDs
-    # @option opts [Array<String>] :options Options for the operation. Options include: - &#x60;unsafe&#x60; – fetch all the properties, cannot be specified with &#x60;props&#x60;. - &#x60;show_builtins&#x60; – show built-in properties, can only be specified with &#x60;unsafe&#x60;. - &#x60;archived&#x60; – whether to list only archived objects. If not specified, list only active objects. 
+    # @option opts [Array<String>] :options Options for the operation. Options include: - &#x60;archived&#x60; – whether to list only archived objects. If not specified, list only active objects. - &#x60;show_builtins&#x60; – show built-in properties, can only be specified with &#x60;unsafe&#x60;. - &#x60;unsafe&#x60; – fetch all the properties, cannot be specified with &#x60;props&#x60;. 
     # @option opts [Array<String>] :props The list of property names and transformations. To include multiple names and transformation bindings, provide a comma-separated list. For example, &#x60;props&#x3D;first_name,last_name&#x60;. If the &#x60;unsafe&#x60; option is used, must be empty.
     # @return [ObjectFieldsPage]
     def list_objects(collection, reason, opts = {})
@@ -346,7 +660,7 @@ module PvaultSdk
     # @option opts [String] :cursor The cursor represents the state of consecutive queries for the same request parameters. In the first call, the cursor may be omitted or specified as an empty string. In consecutive calls, it should be set to the value of the cursor field of the objectFieldsPage returned by the previous call. Note: when the &#x60;id&#x60; is specified, paging is not supported. In this case, if the number of &#x60;id&#x60; values specified exceeds the maximum page size, the method returns 400 (BAD REQUEST).
     # @option opts [String] :x_trans_param Extra parameter to pass on to the transformations.
     # @option opts [Array<String>] :ids A comma-separated list of object IDs
-    # @option opts [Array<String>] :options Options for the operation. Options include: - &#x60;unsafe&#x60; – fetch all the properties, cannot be specified with &#x60;props&#x60;. - &#x60;show_builtins&#x60; – show built-in properties, can only be specified with &#x60;unsafe&#x60;. - &#x60;archived&#x60; – whether to list only archived objects. If not specified, list only active objects. 
+    # @option opts [Array<String>] :options Options for the operation. Options include: - &#x60;archived&#x60; – whether to list only archived objects. If not specified, list only active objects. - &#x60;show_builtins&#x60; – show built-in properties, can only be specified with &#x60;unsafe&#x60;. - &#x60;unsafe&#x60; – fetch all the properties, cannot be specified with &#x60;props&#x60;. 
     # @option opts [Array<String>] :props The list of property names and transformations. To include multiple names and transformation bindings, provide a comma-separated list. For example, &#x60;props&#x3D;first_name,last_name&#x60;. If the &#x60;unsafe&#x60; option is used, must be empty.
     # @return [Array<(ObjectFieldsPage, Integer, Hash)>] ObjectFieldsPage data, response status code and response headers
     def list_objects_with_http_info(collection, reason, opts = {})
@@ -357,6 +671,11 @@ module PvaultSdk
       if @api_client.config.client_side_validation && collection.nil?
         fail ArgumentError, "Missing the required parameter 'collection' when calling ObjectsApi.list_objects"
       end
+      pattern = Regexp.new(/^[a-zA-Z][a-zA-Z0-9_]*$/)
+      if @api_client.config.client_side_validation && collection !~ pattern
+        fail ArgumentError, "invalid value for 'collection' when calling ObjectsApi.list_objects, must conform to the pattern #{pattern}."
+      end
+
       # verify the required parameter 'reason' is set
       if @api_client.config.client_side_validation && reason.nil?
         fail ArgumentError, "Missing the required parameter 'reason' when calling ObjectsApi.list_objects"
@@ -365,6 +684,14 @@ module PvaultSdk
       allowable_values = ["AppFunctionality", "Analytics", "Notifications", "Marketing", "ThirdPartyMarketing", "FraudPreventionSecurityAndCompliance", "AccountManagement", "Maintenance", "DataSubjectRequest", "Other"]
       if @api_client.config.client_side_validation && !allowable_values.include?(reason)
         fail ArgumentError, "invalid value for \"reason\", must be one of #{allowable_values}"
+      end
+      if @api_client.config.client_side_validation && !opts[:'page_size'].nil? && opts[:'page_size'] < 0
+        fail ArgumentError, 'invalid value for "opts[:"page_size"]" when calling ObjectsApi.list_objects, must be greater than or equal to 0.'
+      end
+
+      allowable_values = ["unsafe", "show_builtins", "archived"]
+      if @api_client.config.client_side_validation && opts[:'options'] && !opts[:'options'].all? { |item| allowable_values.include?(item) }
+        fail ArgumentError, "invalid value for \"options\", must include one of #{allowable_values}"
       end
       # resource path
       local_var_path = '/api/pvlt/1.0/data/collections/{collection}/objects'.sub('{' + 'collection' + '}', CGI.escape(collection.to_s))
@@ -419,14 +746,14 @@ module PvaultSdk
     # Returns a [paginated list](/api/api-pagination) of objects, with property values, from a collection that satisfies a query.  The role performing this operation must have all the following: - The `CapDataSearcher` capability. - Policies:   + At least one allowing policy and no denying policies for the `read` operation for each of the collection properties     specified in the `props` query parameter.   + At least one allowing policy and no denying policies for the `search` operation for each of the collection     properties     specified in the `query` body parameter.  See [identity and access management](/data-security/identity-and-access-management) for more information about how capabilities are used to control access to operations and policies are used to control access to data.  **Warning**: Use of the `unsafe` option, to include all object property values, may expose more private information than is required, use with caution..
     # @param collection [String] The name of the collection containing the objects.
     # @param reason [String] Details of the reason for requesting the property. The default is set when no access reason is provided and PVAULT_SERVICE_FORCE_ACCESS_REASON is false.
-    # @param query [Query] The query. This is a JSON object consisting of property keys and match values. For example: &#x60;&#x60;&#x60;json {   \&quot;match\&quot;: {     \&quot;first_name\&quot;: \&quot;John\&quot;,     \&quot;last_name\&quot;: \&quot;Doe\&quot;   } } &#x60;&#x60;&#x60; is the equivalent to: &#x60;&#x60;&#x60;sql where first_name &#x3D; \&quot;John\&quot; AND last_name&#x3D;\&quot;Doe\&quot; &#x60;&#x60;&#x60; 
+    # @param query [Query] The query. This is a JSON object consisting of two maps in which the keys are property names.  The &#x60;in&#x60; map maps a property name to an array of possible values for that property. The &#x60;match&#x60; map maps a property name to the required value for that property. An object matches the query if the object meets the requirements of both maps. For example: &#x60;&#x60;&#x60;json {   \&quot;in\&quot;: {     \&quot;email\&quot;: [\&quot;john@work.com\&quot;, \&quot;john@home.com\&quot;],   },   \&quot;match\&quot;: {     \&quot;first_name\&quot;: \&quot;John\&quot;,     \&quot;last_name\&quot;: \&quot;Doe\&quot;   } } &#x60;&#x60;&#x60; is equivalent to: &#x60;&#x60;&#x60;sql WHERE first_name &#x3D; &#39;John&#39; AND last_name&#x3D;&#39;Doe&#39; AND email IN (&#39;john@work.com&#39;, &#39;john@home.com&#39;) &#x60;&#x60;&#x60; 
     # @param [Hash] opts the optional parameters
     # @option opts [String] :adhoc_reason An ad-hoc reason for accessing the Vault data.
     # @option opts [Boolean] :reload_cache Reloads the cache before the action.
     # @option opts [Integer] :page_size The maximum number of items to return in this request. If not specified, the default value is used. The default value is the value specified in the environment variable &#x60;PVAULT_SERVICE_DEFAULT_PAGE_SIZE&#x60;. The value must not exceed the value specified in the environment variable &#x60;PVAULT_SERVICE_DEFAULT_PAGE_SIZE&#x60;
     # @option opts [String] :cursor The cursor represents the state of consecutive queries for the same request parameters. In the first call, the cursor may be omitted or specified as an empty string. In consecutive calls, it should be set to the value of the cursor field of the objectFieldsPage returned by the previous call. Note: when the &#x60;id&#x60; is specified, paging is not supported. In this case, if the number of &#x60;id&#x60; values specified exceeds the maximum page size, the method returns 400 (BAD REQUEST).
     # @option opts [String] :x_trans_param Extra parameter to pass on to the transformations.
-    # @option opts [Array<String>] :options Options for the operation. Options include: - &#x60;unsafe&#x60; – fetch all the properties, cannot be specified with &#x60;props&#x60;. - &#x60;show_builtins&#x60; – show built-in properties, can only be specified with &#x60;unsafe&#x60;. - &#x60;archived&#x60; – whether to search only archived objects. If not specified, search only active objects. 
+    # @option opts [Array<String>] :options Options for the operation. Options include: - &#x60;archived&#x60; – whether to search only archived objects. If not specified, search only active objects. - &#x60;show_builtins&#x60; – show built-in properties, can only be specified with &#x60;unsafe&#x60;. - &#x60;unsafe&#x60; – fetch all the properties, cannot be specified with &#x60;props&#x60;. 
     # @option opts [Array<String>] :props The list of property names and transformations. To include multiple names and transformation bindings, provide a comma-separated list. For example, &#x60;props&#x3D;first_name,last_name&#x60;. If the &#x60;unsafe&#x60; option is used, must be empty.
     # @return [ObjectFieldsPage]
     def search_objects(collection, reason, query, opts = {})
@@ -438,14 +765,14 @@ module PvaultSdk
     # Returns a [paginated list](/api/api-pagination) of objects, with property values, from a collection that satisfies a query.  The role performing this operation must have all the following: - The &#x60;CapDataSearcher&#x60; capability. - Policies:   + At least one allowing policy and no denying policies for the &#x60;read&#x60; operation for each of the collection properties     specified in the &#x60;props&#x60; query parameter.   + At least one allowing policy and no denying policies for the &#x60;search&#x60; operation for each of the collection     properties     specified in the &#x60;query&#x60; body parameter.  See [identity and access management](/data-security/identity-and-access-management) for more information about how capabilities are used to control access to operations and policies are used to control access to data.  **Warning**: Use of the &#x60;unsafe&#x60; option, to include all object property values, may expose more private information than is required, use with caution..
     # @param collection [String] The name of the collection containing the objects.
     # @param reason [String] Details of the reason for requesting the property. The default is set when no access reason is provided and PVAULT_SERVICE_FORCE_ACCESS_REASON is false.
-    # @param query [Query] The query. This is a JSON object consisting of property keys and match values. For example: &#x60;&#x60;&#x60;json {   \&quot;match\&quot;: {     \&quot;first_name\&quot;: \&quot;John\&quot;,     \&quot;last_name\&quot;: \&quot;Doe\&quot;   } } &#x60;&#x60;&#x60; is the equivalent to: &#x60;&#x60;&#x60;sql where first_name &#x3D; \&quot;John\&quot; AND last_name&#x3D;\&quot;Doe\&quot; &#x60;&#x60;&#x60; 
+    # @param query [Query] The query. This is a JSON object consisting of two maps in which the keys are property names.  The &#x60;in&#x60; map maps a property name to an array of possible values for that property. The &#x60;match&#x60; map maps a property name to the required value for that property. An object matches the query if the object meets the requirements of both maps. For example: &#x60;&#x60;&#x60;json {   \&quot;in\&quot;: {     \&quot;email\&quot;: [\&quot;john@work.com\&quot;, \&quot;john@home.com\&quot;],   },   \&quot;match\&quot;: {     \&quot;first_name\&quot;: \&quot;John\&quot;,     \&quot;last_name\&quot;: \&quot;Doe\&quot;   } } &#x60;&#x60;&#x60; is equivalent to: &#x60;&#x60;&#x60;sql WHERE first_name &#x3D; &#39;John&#39; AND last_name&#x3D;&#39;Doe&#39; AND email IN (&#39;john@work.com&#39;, &#39;john@home.com&#39;) &#x60;&#x60;&#x60; 
     # @param [Hash] opts the optional parameters
     # @option opts [String] :adhoc_reason An ad-hoc reason for accessing the Vault data.
     # @option opts [Boolean] :reload_cache Reloads the cache before the action.
     # @option opts [Integer] :page_size The maximum number of items to return in this request. If not specified, the default value is used. The default value is the value specified in the environment variable &#x60;PVAULT_SERVICE_DEFAULT_PAGE_SIZE&#x60;. The value must not exceed the value specified in the environment variable &#x60;PVAULT_SERVICE_DEFAULT_PAGE_SIZE&#x60;
     # @option opts [String] :cursor The cursor represents the state of consecutive queries for the same request parameters. In the first call, the cursor may be omitted or specified as an empty string. In consecutive calls, it should be set to the value of the cursor field of the objectFieldsPage returned by the previous call. Note: when the &#x60;id&#x60; is specified, paging is not supported. In this case, if the number of &#x60;id&#x60; values specified exceeds the maximum page size, the method returns 400 (BAD REQUEST).
     # @option opts [String] :x_trans_param Extra parameter to pass on to the transformations.
-    # @option opts [Array<String>] :options Options for the operation. Options include: - &#x60;unsafe&#x60; – fetch all the properties, cannot be specified with &#x60;props&#x60;. - &#x60;show_builtins&#x60; – show built-in properties, can only be specified with &#x60;unsafe&#x60;. - &#x60;archived&#x60; – whether to search only archived objects. If not specified, search only active objects. 
+    # @option opts [Array<String>] :options Options for the operation. Options include: - &#x60;archived&#x60; – whether to search only archived objects. If not specified, search only active objects. - &#x60;show_builtins&#x60; – show built-in properties, can only be specified with &#x60;unsafe&#x60;. - &#x60;unsafe&#x60; – fetch all the properties, cannot be specified with &#x60;props&#x60;. 
     # @option opts [Array<String>] :props The list of property names and transformations. To include multiple names and transformation bindings, provide a comma-separated list. For example, &#x60;props&#x3D;first_name,last_name&#x60;. If the &#x60;unsafe&#x60; option is used, must be empty.
     # @return [Array<(ObjectFieldsPage, Integer, Hash)>] ObjectFieldsPage data, response status code and response headers
     def search_objects_with_http_info(collection, reason, query, opts = {})
@@ -456,6 +783,11 @@ module PvaultSdk
       if @api_client.config.client_side_validation && collection.nil?
         fail ArgumentError, "Missing the required parameter 'collection' when calling ObjectsApi.search_objects"
       end
+      pattern = Regexp.new(/^[a-zA-Z][a-zA-Z0-9_]*$/)
+      if @api_client.config.client_side_validation && collection !~ pattern
+        fail ArgumentError, "invalid value for 'collection' when calling ObjectsApi.search_objects, must conform to the pattern #{pattern}."
+      end
+
       # verify the required parameter 'reason' is set
       if @api_client.config.client_side_validation && reason.nil?
         fail ArgumentError, "Missing the required parameter 'reason' when calling ObjectsApi.search_objects"
@@ -468,6 +800,14 @@ module PvaultSdk
       # verify the required parameter 'query' is set
       if @api_client.config.client_side_validation && query.nil?
         fail ArgumentError, "Missing the required parameter 'query' when calling ObjectsApi.search_objects"
+      end
+      if @api_client.config.client_side_validation && !opts[:'page_size'].nil? && opts[:'page_size'] < 0
+        fail ArgumentError, 'invalid value for "opts[:"page_size"]" when calling ObjectsApi.search_objects, must be greater than or equal to 0.'
+      end
+
+      allowable_values = ["unsafe", "show_builtins", "archived"]
+      if @api_client.config.client_side_validation && opts[:'options'] && !opts[:'options'].all? { |item| allowable_values.include?(item) }
+        fail ArgumentError, "invalid value for \"options\", must include one of #{allowable_values}"
       end
       # resource path
       local_var_path = '/api/pvlt/1.0/data/collections/{collection}/query/objects'.sub('{' + 'collection' + '}', CGI.escape(collection.to_s))
@@ -525,7 +865,7 @@ module PvaultSdk
     # Update object
     # Updates properties of an object in a collection.  The role performing this operation must have both of the following: - The `CapDataWriter` capability. - At least one allowing policy and no denying policies for the `write` operation for each of the collection properties   specified in the call.  See [identity and access management](/data-security/identity-and-access-management) for more information about how capabilities are used to control access to operations and policies are used to control access to data. 
     # @param collection [String] The name of the collection containing the object.
-    # @param ids [Array<String>] A comma-separated list of object IDs
+    # @param id [String] The ID of the object.
     # @param reason [String] Details of the reason for requesting the property. The default is set when no access reason is provided and PVAULT_SERVICE_FORCE_ACCESS_REASON is false.
     # @param request_body [Hash<String, Object>] The object properties to update.
     # @param [Hash] opts the optional parameters
@@ -534,15 +874,15 @@ module PvaultSdk
     # @option opts [String] :expiration_secs Object expiration time in seconds. If not set, the default is used. See the &#x60;PVAULT_EXPIRATION_ASSOCIATED_OBJECTS&#x60; and &#x60;PVAULT_EXPIRATION_UNASSOCIATED_OBJECTS&#x60; environment variables.
     # @option opts [Array<String>] :options Options for the operation. Options include: - &#x60;archived&#x60; – whether to update only archived objects. If not specified, update only active objects. 
     # @return [nil]
-    def update_object_by_id(collection, ids, reason, request_body, opts = {})
-      update_object_by_id_with_http_info(collection, ids, reason, request_body, opts)
+    def update_object_by_id(collection, id, reason, request_body, opts = {})
+      update_object_by_id_with_http_info(collection, id, reason, request_body, opts)
       nil
     end
 
     # Update object
     # Updates properties of an object in a collection.  The role performing this operation must have both of the following: - The &#x60;CapDataWriter&#x60; capability. - At least one allowing policy and no denying policies for the &#x60;write&#x60; operation for each of the collection properties   specified in the call.  See [identity and access management](/data-security/identity-and-access-management) for more information about how capabilities are used to control access to operations and policies are used to control access to data. 
     # @param collection [String] The name of the collection containing the object.
-    # @param ids [Array<String>] A comma-separated list of object IDs
+    # @param id [String] The ID of the object.
     # @param reason [String] Details of the reason for requesting the property. The default is set when no access reason is provided and PVAULT_SERVICE_FORCE_ACCESS_REASON is false.
     # @param request_body [Hash<String, Object>] The object properties to update.
     # @param [Hash] opts the optional parameters
@@ -551,7 +891,7 @@ module PvaultSdk
     # @option opts [String] :expiration_secs Object expiration time in seconds. If not set, the default is used. See the &#x60;PVAULT_EXPIRATION_ASSOCIATED_OBJECTS&#x60; and &#x60;PVAULT_EXPIRATION_UNASSOCIATED_OBJECTS&#x60; environment variables.
     # @option opts [Array<String>] :options Options for the operation. Options include: - &#x60;archived&#x60; – whether to update only archived objects. If not specified, update only active objects. 
     # @return [Array<(nil, Integer, Hash)>] nil, response status code and response headers
-    def update_object_by_id_with_http_info(collection, ids, reason, request_body, opts = {})
+    def update_object_by_id_with_http_info(collection, id, reason, request_body, opts = {})
       if @api_client.config.debugging
         @api_client.config.logger.debug 'Calling API: ObjectsApi.update_object_by_id ...'
       end
@@ -559,18 +899,15 @@ module PvaultSdk
       if @api_client.config.client_side_validation && collection.nil?
         fail ArgumentError, "Missing the required parameter 'collection' when calling ObjectsApi.update_object_by_id"
       end
-      # verify the required parameter 'ids' is set
-      if @api_client.config.client_side_validation && ids.nil?
-        fail ArgumentError, "Missing the required parameter 'ids' when calling ObjectsApi.update_object_by_id"
-      end
-      if @api_client.config.client_side_validation && ids.length > 1
-        fail ArgumentError, 'invalid value for "ids" when calling ObjectsApi.update_object_by_id, number of items must be less than or equal to 1.'
+      pattern = Regexp.new(/^[a-zA-Z][a-zA-Z0-9_]*$/)
+      if @api_client.config.client_side_validation && collection !~ pattern
+        fail ArgumentError, "invalid value for 'collection' when calling ObjectsApi.update_object_by_id, must conform to the pattern #{pattern}."
       end
 
-      if @api_client.config.client_side_validation && ids.length < 1
-        fail ArgumentError, 'invalid value for "ids" when calling ObjectsApi.update_object_by_id, number of items must be greater than or equal to 1.'
+      # verify the required parameter 'id' is set
+      if @api_client.config.client_side_validation && id.nil?
+        fail ArgumentError, "Missing the required parameter 'id' when calling ObjectsApi.update_object_by_id"
       end
-
       # verify the required parameter 'reason' is set
       if @api_client.config.client_side_validation && reason.nil?
         fail ArgumentError, "Missing the required parameter 'reason' when calling ObjectsApi.update_object_by_id"
@@ -589,12 +926,15 @@ module PvaultSdk
         fail ArgumentError, "invalid value for 'opts[:\"expiration_secs\"]' when calling ObjectsApi.update_object_by_id, must conform to the pattern #{pattern}."
       end
 
+      allowable_values = ["archived"]
+      if @api_client.config.client_side_validation && opts[:'options'] && !opts[:'options'].all? { |item| allowable_values.include?(item) }
+        fail ArgumentError, "invalid value for \"options\", must include one of #{allowable_values}"
+      end
       # resource path
-      local_var_path = '/api/pvlt/1.0/data/collections/{collection}/objects'.sub('{' + 'collection' + '}', CGI.escape(collection.to_s))
+      local_var_path = '/api/pvlt/1.0/data/collections/{collection}/objects/{id}'.sub('{' + 'collection' + '}', CGI.escape(collection.to_s)).sub('{' + 'id' + '}', CGI.escape(id.to_s))
 
       # query parameters
       query_params = opts[:query_params] || {}
-      query_params[:'ids'] = @api_client.build_collection_param(ids, :multi)
       query_params[:'reason'] = reason
       query_params[:'adhoc_reason'] = opts[:'adhoc_reason'] if !opts[:'adhoc_reason'].nil?
       query_params[:'reload_cache'] = opts[:'reload_cache'] if !opts[:'reload_cache'].nil?
@@ -636,6 +976,114 @@ module PvaultSdk
       data, status_code, headers = @api_client.call_api(:PATCH, local_var_path, new_options)
       if @api_client.config.debugging
         @api_client.config.logger.debug "API called: ObjectsApi#update_object_by_id\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
+    # Update objects (bulk)
+    # Updates properties of objects in a collection.  If any object update fails, the operation fails and no objects are updated.  The maximum number of objects that can be updated in one operation is determined by the [`PVAULT_SERVICE_MAX_PAGE_SIZE` environment variable](/guides/configure/environment-variables#service-and-features).  The role performing this operation must have both of the following: - The `CapDataWriter` capability. - For each object in the request, at least one allowing policy and no denying policies for the `write` operation for each of the object's properties.  See [identity and access management](/data-security/identity-and-access-management) for more information about how  capabilities are used to control access to operations and policies are used to control access to data. 
+    # @param collection [String] The name of the collection containing the objects.
+    # @param reason [String] Details of the reason for requesting the property. The default is set when no access reason is provided and PVAULT_SERVICE_FORCE_ACCESS_REASON is false.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :expiration_secs Expiration time in seconds for the tokens. If not set, the expiry dates of the tokens are not changed.
+    # @option opts [Array<String>] :options Options for the operation. Options include: - &#x60;archived&#x60; – whether to update only archived objects. If not specified, updates only active objects. 
+    # @option opts [String] :adhoc_reason An ad-hoc reason for accessing the Vault data.
+    # @option opts [Boolean] :reload_cache Reloads the cache before the action.
+    # @option opts [Array<Hash>] :request_body List of objects properties to update. The order of the objects in the array is preserved in the response. 
+    # @return [BulkObjectResponse]
+    def update_objects(collection, reason, opts = {})
+      data, _status_code, _headers = update_objects_with_http_info(collection, reason, opts)
+      data
+    end
+
+    # Update objects (bulk)
+    # Updates properties of objects in a collection.  If any object update fails, the operation fails and no objects are updated.  The maximum number of objects that can be updated in one operation is determined by the [&#x60;PVAULT_SERVICE_MAX_PAGE_SIZE&#x60; environment variable](/guides/configure/environment-variables#service-and-features).  The role performing this operation must have both of the following: - The &#x60;CapDataWriter&#x60; capability. - For each object in the request, at least one allowing policy and no denying policies for the &#x60;write&#x60; operation for each of the object&#39;s properties.  See [identity and access management](/data-security/identity-and-access-management) for more information about how  capabilities are used to control access to operations and policies are used to control access to data. 
+    # @param collection [String] The name of the collection containing the objects.
+    # @param reason [String] Details of the reason for requesting the property. The default is set when no access reason is provided and PVAULT_SERVICE_FORCE_ACCESS_REASON is false.
+    # @param [Hash] opts the optional parameters
+    # @option opts [String] :expiration_secs Expiration time in seconds for the tokens. If not set, the expiry dates of the tokens are not changed.
+    # @option opts [Array<String>] :options Options for the operation. Options include: - &#x60;archived&#x60; – whether to update only archived objects. If not specified, updates only active objects. 
+    # @option opts [String] :adhoc_reason An ad-hoc reason for accessing the Vault data.
+    # @option opts [Boolean] :reload_cache Reloads the cache before the action.
+    # @option opts [Array<Hash>] :request_body List of objects properties to update. The order of the objects in the array is preserved in the response. 
+    # @return [Array<(BulkObjectResponse, Integer, Hash)>] BulkObjectResponse data, response status code and response headers
+    def update_objects_with_http_info(collection, reason, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: ObjectsApi.update_objects ...'
+      end
+      # verify the required parameter 'collection' is set
+      if @api_client.config.client_side_validation && collection.nil?
+        fail ArgumentError, "Missing the required parameter 'collection' when calling ObjectsApi.update_objects"
+      end
+      pattern = Regexp.new(/^[a-zA-Z][a-zA-Z0-9_]*$/)
+      if @api_client.config.client_side_validation && collection !~ pattern
+        fail ArgumentError, "invalid value for 'collection' when calling ObjectsApi.update_objects, must conform to the pattern #{pattern}."
+      end
+
+      # verify the required parameter 'reason' is set
+      if @api_client.config.client_side_validation && reason.nil?
+        fail ArgumentError, "Missing the required parameter 'reason' when calling ObjectsApi.update_objects"
+      end
+      # verify enum value
+      allowable_values = ["AppFunctionality", "Analytics", "Notifications", "Marketing", "ThirdPartyMarketing", "FraudPreventionSecurityAndCompliance", "AccountManagement", "Maintenance", "DataSubjectRequest", "Other"]
+      if @api_client.config.client_side_validation && !allowable_values.include?(reason)
+        fail ArgumentError, "invalid value for \"reason\", must be one of #{allowable_values}"
+      end
+      pattern = Regexp.new(/^[0-9]*$/)
+      if @api_client.config.client_side_validation && !opts[:'expiration_secs'].nil? && opts[:'expiration_secs'] !~ pattern
+        fail ArgumentError, "invalid value for 'opts[:\"expiration_secs\"]' when calling ObjectsApi.update_objects, must conform to the pattern #{pattern}."
+      end
+
+      allowable_values = ["archived"]
+      if @api_client.config.client_side_validation && opts[:'options'] && !opts[:'options'].all? { |item| allowable_values.include?(item) }
+        fail ArgumentError, "invalid value for \"options\", must include one of #{allowable_values}"
+      end
+      # resource path
+      local_var_path = '/api/pvlt/1.0/data/collections/{collection}/bulk/objects'.sub('{' + 'collection' + '}', CGI.escape(collection.to_s))
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+      query_params[:'reason'] = reason
+      query_params[:'expiration_secs'] = opts[:'expiration_secs'] if !opts[:'expiration_secs'].nil?
+      query_params[:'options'] = @api_client.build_collection_param(opts[:'options'], :multi) if !opts[:'options'].nil?
+      query_params[:'adhoc_reason'] = opts[:'adhoc_reason'] if !opts[:'adhoc_reason'].nil?
+      query_params[:'reload_cache'] = opts[:'reload_cache'] if !opts[:'reload_cache'].nil?
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json'])
+      # HTTP header 'Content-Type'
+      content_type = @api_client.select_header_content_type(['application/json'])
+      if !content_type.nil?
+          header_params['Content-Type'] = content_type
+      end
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body] || @api_client.object_to_http_body(opts[:'request_body'])
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'BulkObjectResponse'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['bearerAuth']
+
+      new_options = opts.merge(
+        :operation => :"ObjectsApi.update_objects",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:PATCH, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: ObjectsApi#update_objects\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
       end
       return data, status_code, headers
     end

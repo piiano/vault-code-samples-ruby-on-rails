@@ -32,13 +32,13 @@ PvaultSdk.configure do |config|
 end
 
 api_instance = PvaultSdk::TokensApi.new
-collection = 'collection_example' # String | The name of the collection containing the objects.
+collection = 'buyers' # String | The name of the collection containing the objects.
 reason = 'AppFunctionality' # String | Details of the reason for requesting the property. The default is set when no access reason is provided and PVAULT_SERVICE_FORCE_ACCESS_REASON is false.
 opts = {
   object_ids: ['inner_example'], # Array<String> | Comma-separated list of object IDs.
   tags: ['inner_example'], # Array<String> | Comma-separated list of tags.
   token_ids: ['inner_example'], # Array<String> | Comma-separated list of token IDs.
-  options: ['inner_example'], # Array<String> | Options for the operation. Options include: - `archived` – whether to delete only archived tokens. If not specified, delete only active tokens. 
+  options: ['archived'], # Array<String> | Options for the operation. Options include: - `archived` – whether to delete only archived tokens. If not specified, delete only active tokens. 
   adhoc_reason: 'adhoc_reason_example', # String | An ad-hoc reason for accessing the Vault data.
   reload_cache: true # Boolean | Reloads the cache before the action.
 }
@@ -116,7 +116,7 @@ PvaultSdk.configure do |config|
 end
 
 api_instance = PvaultSdk::TokensApi.new
-collection = 'collection_example' # String | The name of the collection containing the objects.
+collection = 'buyers' # String | The name of the collection containing the objects.
 reason = 'AppFunctionality' # String | Details of the reason for requesting the property. The default is set when no access reason is provided and PVAULT_SERVICE_FORCE_ACCESS_REASON is false.
 opts = {
   object_ids: ['inner_example'], # Array<String> | Comma-separated list of object IDs.
@@ -202,7 +202,7 @@ end
 
 api_instance = PvaultSdk::TokensApi.new
 token_ids = ['inner_example'] # Array<String> | Comma-separated list of token IDs.
-collection = 'collection_example' # String | The name of the collection containing the objects.
+collection = 'buyers' # String | The name of the collection containing the objects.
 reason = 'AppFunctionality' # String | Details of the reason for requesting the property. The default is set when no access reason is provided and PVAULT_SERVICE_FORCE_ACCESS_REASON is false.
 opts = {
   adhoc_reason: 'adhoc_reason_example', # String | An ad-hoc reason for accessing the Vault data.
@@ -280,11 +280,11 @@ PvaultSdk.configure do |config|
 end
 
 api_instance = PvaultSdk::TokensApi.new
-collection = 'collection_example' # String | The name of the collection containing the objects.
+collection = 'buyers' # String | The name of the collection containing the objects.
 reason = 'AppFunctionality' # String | Details of the reason for requesting the property. The default is set when no access reason is provided and PVAULT_SERVICE_FORCE_ACCESS_REASON is false.
 query_token = PvaultSdk::QueryToken.new # QueryToken | The token query.
 opts = {
-  options: ['inner_example'], # Array<String> | Options for the operation. Options include: - `archived` – whether to search only archived tokens. If not specified, search only active tokens. 
+  options: ['archived'], # Array<String> | Options for the operation. Options include: - `archived` – whether to search only archived tokens. If not specified, search only active tokens. 
   adhoc_reason: 'adhoc_reason_example', # String | An ad-hoc reason for accessing the Vault data.
   reload_cache: true # Boolean | Reloads the cache before the action.
 }
@@ -361,9 +361,9 @@ PvaultSdk.configure do |config|
 end
 
 api_instance = PvaultSdk::TokensApi.new
-collection = 'collection_example' # String | The name of the collection containing the objects.
+collection = 'buyers' # String | The name of the collection containing the objects.
 reason = 'AppFunctionality' # String | Details of the reason for requesting the property. The default is set when no access reason is provided and PVAULT_SERVICE_FORCE_ACCESS_REASON is false.
-tokenize_request = PvaultSdk::TokenizeRequest.new({object_ids: ['object_ids_example'], props: ['credit_card_no'], type: 'POINTER'}) # TokenizeRequest | Details of the tokenization request.
+tokenize_request = [PvaultSdk::TokenizeRequest.new({type: PvaultSdk::TokenType::PCI, object: PvaultSdk::InputObject.new, props: ['credit_card_no']})] # Array<TokenizeRequest> | Details of the tokenization request.
 opts = {
   expiration_secs: 'expiration_secs_example', # String | Token expiration time in seconds. If not set, the default expiration time is used. See the `PVAULT_EXPIRATION_TOKENS` variable.
   adhoc_reason: 'adhoc_reason_example', # String | An ad-hoc reason for accessing the Vault data.
@@ -403,7 +403,7 @@ end
 | ---- | ---- | ----------- | ----- |
 | **collection** | **String** | The name of the collection containing the objects. |  |
 | **reason** | **String** | Details of the reason for requesting the property. The default is set when no access reason is provided and PVAULT_SERVICE_FORCE_ACCESS_REASON is false. |  |
-| **tokenize_request** | [**TokenizeRequest**](TokenizeRequest.md) | Details of the tokenization request. |  |
+| **tokenize_request** | [**Array&lt;TokenizeRequest&gt;**](TokenizeRequest.md) | Details of the tokenization request. |  |
 | **expiration_secs** | **String** | Token expiration time in seconds. If not set, the default expiration time is used. See the &#x60;PVAULT_EXPIRATION_TOKENS&#x60; variable. | [optional] |
 | **adhoc_reason** | **String** | An ad-hoc reason for accessing the Vault data. | [optional] |
 | **reload_cache** | **Boolean** | Reloads the cache before the action. | [optional] |
@@ -442,7 +442,7 @@ PvaultSdk.configure do |config|
 end
 
 api_instance = PvaultSdk::TokensApi.new
-collection = 'collection_example' # String | The name of the collection containing the objects.
+collection = 'buyers' # String | The name of the collection containing the objects.
 reason = 'AppFunctionality' # String | Details of the reason for requesting the property. The default is set when no access reason is provided and PVAULT_SERVICE_FORCE_ACCESS_REASON is false.
 update_token_request = PvaultSdk::UpdateTokenRequest.new({tags: ['credit_cards']}) # UpdateTokenRequest | Update token request details.
 opts = {
@@ -450,7 +450,7 @@ opts = {
   object_ids: ['inner_example'], # Array<String> | Comma-separated list of object IDs.
   tags: ['inner_example'], # Array<String> | Comma-separated list of tags.
   token_ids: ['inner_example'], # Array<String> | Comma-separated list of token IDs.
-  options: ['inner_example'], # Array<String> | Options for the operation. Options include: - `archived` – whether to update only archived tokens. If not specified, update only active tokens. 
+  options: ['archived'], # Array<String> | Options for the operation. Options include: - `archived` – whether to update only archived tokens. If not specified, update only active tokens. 
   adhoc_reason: 'adhoc_reason_example', # String | An ad-hoc reason for accessing the Vault data.
   reload_cache: true # Boolean | Reloads the cache before the action.
 }
