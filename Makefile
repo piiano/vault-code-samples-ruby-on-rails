@@ -1,6 +1,6 @@
 PVAULT_DOCKER_NAME	:= pvault-dev
 
-PVAULT_DOCKER_TAG	?= piiano/pvault-dev:latest
+PVAULT_DOCKER_TAG	?= piiano/pvault-dev:1.1.0
 
 APP_DIR						:= ./rails
 SDK_DIR						:= ./pvault-sdk
