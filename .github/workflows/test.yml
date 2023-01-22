@@ -35,7 +35,6 @@ jobs:
         ruby-version: ${{ matrix.ruby-version }}
 
     - name: generate-sdk
-      path: ../pvault-sdk
       run: make generate-sdk
     - name: run tests
       run: make app-test
