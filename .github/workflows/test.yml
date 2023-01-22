@@ -36,6 +36,6 @@ jobs:
 
     - name: generate-sdk
       run:
-        make generate-sdk
+        sudo --chown=555 make generate-sdk
     - name: run tests
       run: make app-test
