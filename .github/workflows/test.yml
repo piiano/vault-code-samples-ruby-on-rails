@@ -34,7 +34,9 @@ jobs:
       with:
         ruby-version: ${{ matrix.ruby-version }}
 
-    - name: generate-sdk
-      run: make generate-sdk
+    - name: clean & generate-sdk
+      run:
+        make clean
+        make generate-sdk
     - name: run tests
       run: make app-test

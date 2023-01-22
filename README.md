@@ -99,8 +99,8 @@ Tests for this example include a full integration test with a single-container P
 export PVAULT_SERVICE_LICENSE=<your Piiano Vault license>
 export PVAULT_API_KEY="pvaultauth"
 
-make generate-sdk
 make clean
+make generate-sdk
 make app-test
 ```
 
