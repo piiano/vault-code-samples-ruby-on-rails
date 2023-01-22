@@ -36,7 +36,7 @@ jobs:
 
     - name: clean & generate-sdk
       run:
-        make clean
+        make -C .. clean
         make generate-sdk
     - name: run tests
       run: make app-test
