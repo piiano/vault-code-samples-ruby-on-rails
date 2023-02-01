@@ -33,6 +33,11 @@ jobs:
       uses: actions/setup-ruby@v1
       with:
         ruby-version: ${{ matrix.ruby-version }}
-    
+
+    - name: download latest openapi
+      run: curl -o ./pvault-sdk-generator/openapi.yaml https://piiano.com/docs/assets/openapi.yaml
+
+    - name: generate sdk
+      run: make generate-sdk
     - name: run tests
       run: make app-test

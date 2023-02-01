@@ -54,6 +54,8 @@ export PVAULT_SERVICE_LICENSE=<your Piiano Vault license>
 export PVAULT_API_KEY="pvaultauth"
 ```
 
+`make clean` - Clean project dependencies.
+
 `make app-run` - Start the application and its prerequisites (Piiano Vault).  
 
 When the application is started, you can make API calls to the API endpoints:
@@ -97,6 +99,8 @@ Tests for this example include a full integration test with a single-container P
 export PVAULT_SERVICE_LICENSE=<your Piiano Vault license>
 export PVAULT_API_KEY="pvaultauth"
 
+make clean
+make generate-sdk
 make app-test
 ```
 

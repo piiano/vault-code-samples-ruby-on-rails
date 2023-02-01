@@ -11,6 +11,6 @@ docker run --rm \
     -p gemRequiredRubyVersion=">=3" \
     -p gemHomepage="https://piiano.com" \
     -g ruby \
-    -o /local/out
-    
-mv $PWD/out/ ../pvault-sdk
+    -o local/out
+
+sudo mv $PWD/out/ ../pvault-sdk
