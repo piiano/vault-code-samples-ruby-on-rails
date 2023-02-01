@@ -15,6 +15,7 @@ require 'time'
 
 module PvaultSdk
   class DetokenizedToken
+    # A list of maps of object properties and their values.
     attr_accessor :fields
 
     # The token ID.

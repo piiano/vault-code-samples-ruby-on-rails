@@ -56,6 +56,11 @@ module PvaultSdk
       if @api_client.config.client_side_validation && collection.nil?
         fail ArgumentError, "Missing the required parameter 'collection' when calling TokensApi.delete_tokens"
       end
+      pattern = Regexp.new(/^[a-zA-Z][a-zA-Z0-9_]*$/)
+      if @api_client.config.client_side_validation && collection !~ pattern
+        fail ArgumentError, "invalid value for 'collection' when calling TokensApi.delete_tokens, must conform to the pattern #{pattern}."
+      end
+
       # verify the required parameter 'reason' is set
       if @api_client.config.client_side_validation && reason.nil?
         fail ArgumentError, "Missing the required parameter 'reason' when calling TokensApi.delete_tokens"
@@ -64,6 +69,10 @@ module PvaultSdk
       allowable_values = ["AppFunctionality", "Analytics", "Notifications", "Marketing", "ThirdPartyMarketing", "FraudPreventionSecurityAndCompliance", "AccountManagement", "Maintenance", "DataSubjectRequest", "Other"]
       if @api_client.config.client_side_validation && !allowable_values.include?(reason)
         fail ArgumentError, "invalid value for \"reason\", must be one of #{allowable_values}"
+      end
+      allowable_values = ["archived"]
+      if @api_client.config.client_side_validation && opts[:'options'] && !opts[:'options'].all? { |item| allowable_values.include?(item) }
+        fail ArgumentError, "invalid value for \"options\", must include one of #{allowable_values}"
       end
       # resource path
       local_var_path = '/api/pvlt/1.0/data/collections/{collection}/tokens'.sub('{' + 'collection' + '}', CGI.escape(collection.to_s))
@@ -149,6 +158,11 @@ module PvaultSdk
       if @api_client.config.client_side_validation && collection.nil?
         fail ArgumentError, "Missing the required parameter 'collection' when calling TokensApi.detokenize"
       end
+      pattern = Regexp.new(/^[a-zA-Z][a-zA-Z0-9_]*$/)
+      if @api_client.config.client_side_validation && collection !~ pattern
+        fail ArgumentError, "invalid value for 'collection' when calling TokensApi.detokenize, must conform to the pattern #{pattern}."
+      end
+
       # verify the required parameter 'reason' is set
       if @api_client.config.client_side_validation && reason.nil?
         fail ArgumentError, "Missing the required parameter 'reason' when calling TokensApi.detokenize"
@@ -171,7 +185,7 @@ module PvaultSdk
       query_params[:'object_ids'] = @api_client.build_collection_param(opts[:'object_ids'], :multi) if !opts[:'object_ids'].nil?
       query_params[:'options'] = @api_client.build_collection_param(opts[:'options'], :multi) if !opts[:'options'].nil?
       query_params[:'tags'] = @api_client.build_collection_param(opts[:'tags'], :multi) if !opts[:'tags'].nil?
-      query_params[:'token_ids'] = @api_client.build_collection_param(opts[:'token_ids'], :csv) if !opts[:'token_ids'].nil?
+      query_params[:'token_ids'] = @api_client.build_collection_param(opts[:'token_ids'], :multi) if !opts[:'token_ids'].nil?
       query_params[:'adhoc_reason'] = opts[:'adhoc_reason'] if !opts[:'adhoc_reason'].nil?
       query_params[:'reload_cache'] = opts[:'reload_cache'] if !opts[:'reload_cache'].nil?
 
@@ -244,6 +258,11 @@ module PvaultSdk
       if @api_client.config.client_side_validation && collection.nil?
         fail ArgumentError, "Missing the required parameter 'collection' when calling TokensApi.rotate_tokens"
       end
+      pattern = Regexp.new(/^[a-zA-Z][a-zA-Z0-9_]*$/)
+      if @api_client.config.client_side_validation && collection !~ pattern
+        fail ArgumentError, "invalid value for 'collection' when calling TokensApi.rotate_tokens, must conform to the pattern #{pattern}."
+      end
+
       # verify the required parameter 'reason' is set
       if @api_client.config.client_side_validation && reason.nil?
         fail ArgumentError, "Missing the required parameter 'reason' when calling TokensApi.rotate_tokens"
@@ -330,6 +349,11 @@ module PvaultSdk
       if @api_client.config.client_side_validation && collection.nil?
         fail ArgumentError, "Missing the required parameter 'collection' when calling TokensApi.search_tokens"
       end
+      pattern = Regexp.new(/^[a-zA-Z][a-zA-Z0-9_]*$/)
+      if @api_client.config.client_side_validation && collection !~ pattern
+        fail ArgumentError, "invalid value for 'collection' when calling TokensApi.search_tokens, must conform to the pattern #{pattern}."
+      end
+
       # verify the required parameter 'reason' is set
       if @api_client.config.client_side_validation && reason.nil?
         fail ArgumentError, "Missing the required parameter 'reason' when calling TokensApi.search_tokens"
@@ -342,6 +366,10 @@ module PvaultSdk
       # verify the required parameter 'query_token' is set
       if @api_client.config.client_side_validation && query_token.nil?
         fail ArgumentError, "Missing the required parameter 'query_token' when calling TokensApi.search_tokens"
+      end
+      allowable_values = ["archived"]
+      if @api_client.config.client_side_validation && opts[:'options'] && !opts[:'options'].all? { |item| allowable_values.include?(item) }
+        fail ArgumentError, "invalid value for \"options\", must include one of #{allowable_values}"
       end
       # resource path
       local_var_path = '/api/pvlt/1.0/data/collections/{collection}/query/tokens'.sub('{' + 'collection' + '}', CGI.escape(collection.to_s))
@@ -396,7 +424,7 @@ module PvaultSdk
     # Creates tokens that reference the values of objects' properties. The token ID is partially or wholly randomly-generated and, therefore, is not sensitive.  The returned token IDs are in the same order as the object IDs in the request. No tokens are created if any object IDs are invalid or not found.  If this operation is called for an object ID and properties that have a token: - Any token tags are appended to the existing token. - If an expiration is specified, then the token expiry is updated. If an expiration is not specified, the token expiry is updated if the default settings result in an expiry date after the token's current expiry date.  The role performing this operation must have both of these: - The `CapTokensWriter` capability. - At least one allowing policy and no denying policies for the `tokenize` operation for each of the collection properties specified in the call.  See [identity and access management](/data-security/identity-and-access-management) for more information about how capabilities are used to control access to operations and policies are used to control access to data. 
     # @param collection [String] The name of the collection containing the objects.
     # @param reason [String] Details of the reason for requesting the property. The default is set when no access reason is provided and PVAULT_SERVICE_FORCE_ACCESS_REASON is false.
-    # @param tokenize_request [TokenizeRequest] Details of the tokenization request.
+    # @param tokenize_request [Array<TokenizeRequest>] Details of the tokenization request.
     # @param [Hash] opts the optional parameters
     # @option opts [String] :expiration_secs Token expiration time in seconds. If not set, the default expiration time is used. See the &#x60;PVAULT_EXPIRATION_TOKENS&#x60; variable.
     # @option opts [String] :adhoc_reason An ad-hoc reason for accessing the Vault data.
@@ -411,7 +439,7 @@ module PvaultSdk
     # Creates tokens that reference the values of objects&#39; properties. The token ID is partially or wholly randomly-generated and, therefore, is not sensitive.  The returned token IDs are in the same order as the object IDs in the request. No tokens are created if any object IDs are invalid or not found.  If this operation is called for an object ID and properties that have a token: - Any token tags are appended to the existing token. - If an expiration is specified, then the token expiry is updated. If an expiration is not specified, the token expiry is updated if the default settings result in an expiry date after the token&#39;s current expiry date.  The role performing this operation must have both of these: - The &#x60;CapTokensWriter&#x60; capability. - At least one allowing policy and no denying policies for the &#x60;tokenize&#x60; operation for each of the collection properties specified in the call.  See [identity and access management](/data-security/identity-and-access-management) for more information about how capabilities are used to control access to operations and policies are used to control access to data. 
     # @param collection [String] The name of the collection containing the objects.
     # @param reason [String] Details of the reason for requesting the property. The default is set when no access reason is provided and PVAULT_SERVICE_FORCE_ACCESS_REASON is false.
-    # @param tokenize_request [TokenizeRequest] Details of the tokenization request.
+    # @param tokenize_request [Array<TokenizeRequest>] Details of the tokenization request.
     # @param [Hash] opts the optional parameters
     # @option opts [String] :expiration_secs Token expiration time in seconds. If not set, the default expiration time is used. See the &#x60;PVAULT_EXPIRATION_TOKENS&#x60; variable.
     # @option opts [String] :adhoc_reason An ad-hoc reason for accessing the Vault data.
@@ -425,6 +453,11 @@ module PvaultSdk
       if @api_client.config.client_side_validation && collection.nil?
         fail ArgumentError, "Missing the required parameter 'collection' when calling TokensApi.tokenize"
       end
+      pattern = Regexp.new(/^[a-zA-Z][a-zA-Z0-9_]*$/)
+      if @api_client.config.client_side_validation && collection !~ pattern
+        fail ArgumentError, "invalid value for 'collection' when calling TokensApi.tokenize, must conform to the pattern #{pattern}."
+      end
+
       # verify the required parameter 'reason' is set
       if @api_client.config.client_side_validation && reason.nil?
         fail ArgumentError, "Missing the required parameter 'reason' when calling TokensApi.tokenize"
@@ -533,6 +566,11 @@ module PvaultSdk
       if @api_client.config.client_side_validation && collection.nil?
         fail ArgumentError, "Missing the required parameter 'collection' when calling TokensApi.update_tokens"
       end
+      pattern = Regexp.new(/^[a-zA-Z][a-zA-Z0-9_]*$/)
+      if @api_client.config.client_side_validation && collection !~ pattern
+        fail ArgumentError, "invalid value for 'collection' when calling TokensApi.update_tokens, must conform to the pattern #{pattern}."
+      end
+
       # verify the required parameter 'reason' is set
       if @api_client.config.client_side_validation && reason.nil?
         fail ArgumentError, "Missing the required parameter 'reason' when calling TokensApi.update_tokens"
@@ -551,6 +589,10 @@ module PvaultSdk
         fail ArgumentError, "invalid value for 'opts[:\"expiration_secs\"]' when calling TokensApi.update_tokens, must conform to the pattern #{pattern}."
       end
 
+      allowable_values = ["archived"]
+      if @api_client.config.client_side_validation && opts[:'options'] && !opts[:'options'].all? { |item| allowable_values.include?(item) }
+        fail ArgumentError, "invalid value for \"options\", must include one of #{allowable_values}"
+      end
       # resource path
       local_var_path = '/api/pvlt/1.0/data/collections/{collection}/tokens'.sub('{' + 'collection' + '}', CGI.escape(collection.to_s))
 

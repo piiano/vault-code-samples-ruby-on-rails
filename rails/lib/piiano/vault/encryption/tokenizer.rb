@@ -71,14 +71,13 @@ module Piiano
 
             # Tokenize
             tokenize_request = PvaultSdk::TokenizeRequest.new({
-              object_ids: [add_object_result._id], 
-              props: [@property], 
-              type: 'VALUE',
-              # If deterministic encryption was requested, use a reusable token
-              # https://piiano.com/docs/guides/tokenize-personal-data/create-a-token#reuse-a-token
-              reuse_token_id: (cipher_options[:deterministic] == true)
+              object: PvaultSdk::InputObject.new({"id": add_object_result.id}),
+              props: [@property],
             })
-            tokenize_result = @tokens_api.tokenize(@collection, @reason, tokenize_request, opts)
+
+            cipher_options[:deterministic] ? tokenize_request.type = PvaultSdk::TokenType.build_from_hash("deterministic") : tokenize_request.type = PvaultSdk::TokenType.build_from_hash("randomized")
+
+            tokenize_result = @tokens_api.tokenize(@collection, @reason, [tokenize_request], opts)
             # We get an array of tokenize results. Pick the first one and return the token_id
             tokenize_result&.first&.token_id
           rescue PvaultSdk::ApiError => e

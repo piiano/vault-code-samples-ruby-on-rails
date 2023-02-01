@@ -79,6 +79,8 @@ require 'pvault-sdk'
 PvaultSdk.configure do |config|
   # Configure Bearer authorization (JWT): bearerAuth
   config.access_token = 'YOUR_BEARER_TOKEN'
+  # Configure a proc to get access tokens in lieu of the static access_token configuration
+  config.access_token_getter = -> { 'YOUR TOKEN GETTER PROC' } 
 end
 
 api_instance = PvaultSdk::CollectionPropertiesApi.new
@@ -121,11 +123,15 @@ Class | Method | HTTP request | Description
 *PvaultSdk::IAMApi* | [**regenerate_user_api_key**](docs/IAMApi.md#regenerate_user_api_key) | **POST** /api/pvlt/1.0/ctl/iam/user/regen | Regenerate user API key
 *PvaultSdk::IAMApi* | [**set_iam_conf**](docs/IAMApi.md#set_iam_conf) | **POST** /api/pvlt/1.0/ctl/iam/conf | Set IAM configuration
 *PvaultSdk::ObjectsApi* | [**add_object**](docs/ObjectsApi.md#add_object) | **POST** /api/pvlt/1.0/data/collections/{collection}/objects | Add object
-*PvaultSdk::ObjectsApi* | [**delete_object_by_id**](docs/ObjectsApi.md#delete_object_by_id) | **DELETE** /api/pvlt/1.0/data/collections/{collection}/objects | Delete object
-*PvaultSdk::ObjectsApi* | [**get_objects_property**](docs/ObjectsApi.md#get_objects_property) | **GET** /api/pvlt/1.0/data/collections/{collection}/properties/{property} | Get objects property
+*PvaultSdk::ObjectsApi* | [**add_objects**](docs/ObjectsApi.md#add_objects) | **POST** /api/pvlt/1.0/data/collections/{collection}/bulk/objects | Add objects (bulk)
+*PvaultSdk::ObjectsApi* | [**delete_object_by_id**](docs/ObjectsApi.md#delete_object_by_id) | **DELETE** /api/pvlt/1.0/data/collections/{collection}/objects/{id} | Delete object
+*PvaultSdk::ObjectsApi* | [**delete_objects**](docs/ObjectsApi.md#delete_objects) | **DELETE** /api/pvlt/1.0/data/collections/{collection}/bulk/objects | Delete objects (bulk)
+*PvaultSdk::ObjectsApi* | [**get_object_by_id**](docs/ObjectsApi.md#get_object_by_id) | **GET** /api/pvlt/1.0/data/collections/{collection}/objects/{id} | Get object
+*PvaultSdk::ObjectsApi* | [**hash_objects**](docs/ObjectsApi.md#hash_objects) | **POST** /api/pvlt/1.0/data/collections/{collection}/hash/objects | Hash objects
 *PvaultSdk::ObjectsApi* | [**list_objects**](docs/ObjectsApi.md#list_objects) | **GET** /api/pvlt/1.0/data/collections/{collection}/objects | List objects
 *PvaultSdk::ObjectsApi* | [**search_objects**](docs/ObjectsApi.md#search_objects) | **POST** /api/pvlt/1.0/data/collections/{collection}/query/objects | Search objects
-*PvaultSdk::ObjectsApi* | [**update_object_by_id**](docs/ObjectsApi.md#update_object_by_id) | **PATCH** /api/pvlt/1.0/data/collections/{collection}/objects | Update object
+*PvaultSdk::ObjectsApi* | [**update_object_by_id**](docs/ObjectsApi.md#update_object_by_id) | **PATCH** /api/pvlt/1.0/data/collections/{collection}/objects/{id} | Update object
+*PvaultSdk::ObjectsApi* | [**update_objects**](docs/ObjectsApi.md#update_objects) | **PATCH** /api/pvlt/1.0/data/collections/{collection}/bulk/objects | Update objects (bulk)
 *PvaultSdk::SystemApi* | [**control_health**](docs/SystemApi.md#control_health) | **GET** /api/pvlt/1.0/ctl/info/health | Get control service health/status
 *PvaultSdk::SystemApi* | [**data_health**](docs/SystemApi.md#data_health) | **GET** /api/pvlt/1.0/data/info/health | Get data service health/status
 *PvaultSdk::SystemApi* | [**garbage_collection**](docs/SystemApi.md#garbage_collection) | **POST** /api/pvlt/1.0/system/admin/lifecycle/gc | Delete objects and tokens
@@ -152,6 +158,8 @@ Class | Method | HTTP request | Description
  - [PvaultSdk::AuthPolicy](docs/AuthPolicy.md)
  - [PvaultSdk::AuthRole](docs/AuthRole.md)
  - [PvaultSdk::AuthUser](docs/AuthUser.md)
+ - [PvaultSdk::BulkObjectResponse](docs/BulkObjectResponse.md)
+ - [PvaultSdk::BulkObjectResult](docs/BulkObjectResult.md)
  - [PvaultSdk::Collection](docs/Collection.md)
  - [PvaultSdk::ConfVar](docs/ConfVar.md)
  - [PvaultSdk::ConfVarValue](docs/ConfVarValue.md)
@@ -168,7 +176,9 @@ Class | Method | HTTP request | Description
  - [PvaultSdk::ConfigTLS](docs/ConfigTLS.md)
  - [PvaultSdk::DetokenizedToken](docs/DetokenizedToken.md)
  - [PvaultSdk::GcDeletionCount](docs/GcDeletionCount.md)
+ - [PvaultSdk::HashObjectRequest](docs/HashObjectRequest.md)
  - [PvaultSdk::Health](docs/Health.md)
+ - [PvaultSdk::InputObject](docs/InputObject.md)
  - [PvaultSdk::KMSStatus](docs/KMSStatus.md)
  - [PvaultSdk::License](docs/License.md)
  - [PvaultSdk::Object](docs/Object.md)
@@ -184,6 +194,7 @@ Class | Method | HTTP request | Description
  - [PvaultSdk::TokenAggregatedMetadata](docs/TokenAggregatedMetadata.md)
  - [PvaultSdk::TokenMetadata](docs/TokenMetadata.md)
  - [PvaultSdk::TokenRefMetadata](docs/TokenRefMetadata.md)
+ - [PvaultSdk::TokenType](docs/TokenType.md)
  - [PvaultSdk::TokenValue](docs/TokenValue.md)
  - [PvaultSdk::TokenizeRequest](docs/TokenizeRequest.md)
  - [PvaultSdk::Transformation](docs/Transformation.md)

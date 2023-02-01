@@ -15,12 +15,12 @@ require 'time'
 
 module PvaultSdk
   class ObjectID
-    attr_accessor :_id
+    attr_accessor :id
 
     # Attribute mapping from ruby-style variable name to JSON key.
     def self.attribute_map
       {
-        :'_id' => :'_id'
+        :'id' => :'id'
       }
     end
 
@@ -32,7 +32,7 @@ module PvaultSdk
     # Attribute type mapping.
     def self.openapi_types
       {
-        :'_id' => :'String'
+        :'id' => :'String'
       }
     end
 
@@ -57,8 +57,8 @@ module PvaultSdk
         h[k.to_sym] = v
       }
 
-      if attributes.key?(:'_id')
-        self._id = attributes[:'_id']
+      if attributes.key?(:'id')
+        self.id = attributes[:'id']
       end
     end
 
@@ -66,8 +66,8 @@ module PvaultSdk
     # @return Array for valid properties with the reasons
     def list_invalid_properties
       invalid_properties = Array.new
-      if @_id.nil?
-        invalid_properties.push('invalid value for "_id", _id cannot be nil.')
+      if @id.nil?
+        invalid_properties.push('invalid value for "id", id cannot be nil.')
       end
 
       invalid_properties
@@ -76,7 +76,7 @@ module PvaultSdk
     # Check to see if the all the properties in the model are valid
     # @return true if the model is valid
     def valid?
-      return false if @_id.nil?
+      return false if @id.nil?
       true
     end
 
@@ -85,7 +85,7 @@ module PvaultSdk
     def ==(o)
       return true if self.equal?(o)
       self.class == o.class &&
-          _id == o._id
+          id == o.id
     end
 
     # @see the `==` method
@@ -97,7 +97,7 @@ module PvaultSdk
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [_id].hash
+      [id].hash
     end
 
     # Builds the object from hash

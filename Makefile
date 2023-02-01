@@ -1,6 +1,6 @@
 PVAULT_DOCKER_NAME	:= pvault-dev
 
-PVAULT_DOCKER_TAG	?= piiano/pvault-dev:1.0.2
+PVAULT_DOCKER_TAG	?= piiano/pvault-dev:latest
 
 APP_DIR						:= ./rails
 SDK_DIR						:= ./pvault-sdk
@@ -66,9 +66,19 @@ app-test: prepare stop-prereq pvault-run
 ###### SDK RUBY ######
 IN_DOCKER_PWD	:= /local
 OPENAPI_YAML	:= $(SDK_GENERATOR_DIR)/openapi.yaml
+OPENAPI_URL     := https://piiano.com/docs/assets/openapi.yaml
+
+$(OPENAPI_YAML):
+	rm -f $(SDK_GENERATOR_DIR)/$(OPENAPI_YAML)
+	curl -o ./pvault-sdk-generator/openapi.yaml $(OPENAPI_URL)
 
 $(SDK_DIR)/pvault-sdk.gemspec: $(OPENAPI_YAML)
 	cd $(SDK_GENERATOR_DIR) && ./bin/generate.sh
 
 .PHONY: generate-sdk
 generate-sdk: $(SDK_DIR)/pvault-sdk.gemspec
+
+.PHONY: clean
+clean:
+	rm -rf $(SDK_DIR)
+	rm -rf $(APP_DIR)/node_modules

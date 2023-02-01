@@ -15,8 +15,6 @@ require 'time'
 
 module PvaultSdk
   class ConfigFeatures
-    attr_accessor :api_key_hashing
-
     attr_accessor :encryption
 
     attr_accessor :encryption_disable_ad
@@ -30,7 +28,6 @@ module PvaultSdk
     # Attribute mapping from ruby-style variable name to JSON key.
     def self.attribute_map
       {
-        :'api_key_hashing' => :'api_key_hashing',
         :'encryption' => :'encryption',
         :'encryption_disable_ad' => :'encryption_disable_ad',
         :'policy_enforcement' => :'policy_enforcement',
@@ -47,7 +44,6 @@ module PvaultSdk
     # Attribute type mapping.
     def self.openapi_types
       {
-        :'api_key_hashing' => :'Boolean',
         :'encryption' => :'Boolean',
         :'encryption_disable_ad' => :'Boolean',
         :'policy_enforcement' => :'Boolean',
@@ -77,10 +73,6 @@ module PvaultSdk
         h[k.to_sym] = v
       }
 
-      if attributes.key?(:'api_key_hashing')
-        self.api_key_hashing = attributes[:'api_key_hashing']
-      end
-
       if attributes.key?(:'encryption')
         self.encryption = attributes[:'encryption']
       end
@@ -106,10 +98,6 @@ module PvaultSdk
     # @return Array for valid properties with the reasons
     def list_invalid_properties
       invalid_properties = Array.new
-      if @api_key_hashing.nil?
-        invalid_properties.push('invalid value for "api_key_hashing", api_key_hashing cannot be nil.')
-      end
-
       if @encryption.nil?
         invalid_properties.push('invalid value for "encryption", encryption cannot be nil.')
       end
@@ -136,7 +124,6 @@ module PvaultSdk
     # Check to see if the all the properties in the model are valid
     # @return true if the model is valid
     def valid?
-      return false if @api_key_hashing.nil?
       return false if @encryption.nil?
       return false if @encryption_disable_ad.nil?
       return false if @policy_enforcement.nil?
@@ -150,7 +137,6 @@ module PvaultSdk
     def ==(o)
       return true if self.equal?(o)
       self.class == o.class &&
-          api_key_hashing == o.api_key_hashing &&
           encryption == o.encryption &&
           encryption_disable_ad == o.encryption_disable_ad &&
           policy_enforcement == o.policy_enforcement &&
@@ -167,7 +153,7 @@ module PvaultSdk
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [api_key_hashing, encryption, encryption_disable_ad, policy_enforcement, mask_license, custom_types_enable].hash
+      [encryption, encryption_disable_ad, policy_enforcement, mask_license, custom_types_enable].hash
     end
 
     # Builds the object from hash
