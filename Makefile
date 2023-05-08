@@ -1,6 +1,6 @@
 PVAULT_DOCKER_NAME	:= pvault-dev
 
-PVAULT_DOCKER_TAG	?= piiano/pvault-dev:1.1.0
+PVAULT_DOCKER_TAG	?= piiano/pvault-dev:1.4.0
 
 APP_DIR						:= ./rails
 SDK_DIR						:= ./pvault-sdk
@@ -10,24 +10,30 @@ SDK_GENERATOR_DIR	:= ./pvault-sdk-generator
 .PHONY: pvault-run
 pvault-run: pvault-stop
 	docker run -d -it \
-			   -e PVAULT_LOG_DATADOG_ENABLE=false \
-			   -e PVAULT_SENTRY_ENABLE=false \
-			   -e PVAULT_SERVICE_LICENSE=$(PVAULT_SERVICE_LICENSE) \
-			   -e PVAULT_DEVMODE=1 \
-			   -p 8123:8123 \
-			   -p 5432:5432 \
-			   --name $(PVAULT_DOCKER_NAME) \
-			   $(PVAULT_DOCKER_TAG)
+			-e PVAULT_LOG_DATADOG_ENABLE=false \
+			-e PVAULT_SENTRY_ENABLE=false \
+			-e PVAULT_SERVICE_LICENSE=${PVAULT_SERVICE_LICENSE} \
+			-e PVAULT_DEVMODE=1 \
+			-p 8123:8123 \
+			-p 5432:5432 \
+			--name $(PVAULT_DOCKER_NAME) \
+			$(PVAULT_DOCKER_TAG)
+
 	# Give Vault a few seconds to start
 	sleep 3
-	# Add a users collection with email property to be used for tokenization.
-	docker exec -i pvault-dev pvault collection add --collection-pvschema " \
-		users PERSONS ( 	\
+
+	# Check if Vault is running. Display logs otherwise.
+	if [ "$$( docker container inspect -f '{{.State.Status}}' $(PVAULT_DOCKER_NAME) )" = "running" ]; then \
+		docker exec -i pvault-dev pvault collection add --collection-pvschema " \
+			users PERSONS ( \
 			name STRING NULL, \
 			email STRING NULL, \
 			ssn SSN NULL, \
-		)"
-
+		)"; \
+	else \
+		docker logs $(PVAULT_DOCKER_NAME); \
+		exit 1; \
+	fi
 
 .PHONY: pvault-stop
 pvault-stop:
@@ -50,7 +56,7 @@ $(APP_DIR)/migrate:
 	cd $(APP_DIR) && bundle exec rails db:reset
 
 .PHONY: prepare
-prepare: prepare-app
+prepare: prepare-sdk prepare-app
 
 .PHONY: stop-prereq
 stop-prereq: pvault-stop
