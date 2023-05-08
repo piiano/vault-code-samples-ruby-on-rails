@@ -40,9 +40,7 @@ jobs:
           repository: piiano/vault-code-samples-ruby-on-rails
 
       - name: Set up Ruby
-      # To automatically get bug fixes and new Ruby versions for ruby/setup-ruby,
-      # change this to (see https://github.com/actions/setup-node#versioning):
-        uses: actions/setup-ruby@v1
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby-version }}
 
