@@ -72,7 +72,7 @@ app-test: prepare stop-prereq pvault-run
 ###### SDK RUBY ######
 IN_DOCKER_PWD	:= /local
 OPENAPI_YAML	:= $(SDK_GENERATOR_DIR)/openapi.yaml
-OPENAPI_URL     := https://piiano.com/docs/assets/openapi.yaml
+OPENAPI_URL     := https://docs.piiano.com/assets/openapi.yaml
 
 $(OPENAPI_YAML):
 	rm -f $(SDK_GENERATOR_DIR)/$(OPENAPI_YAML)
