@@ -45,7 +45,7 @@ jobs:
           ruby-version: ${{ matrix.ruby-version }}
 
       - name: download latest openapi
-        run: curl -o ./pvault-sdk-generator/openapi.yaml https://piiano.com/docs/assets/openapi.yaml
+        run: curl -o ./pvault-sdk-generator/openapi.yaml https://docs.piiano.com/assets/openapi.yaml
 
       - name: generate sdk
         run: make generate-sdk
