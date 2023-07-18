@@ -5,4 +5,6 @@ if ! gem list foreman -i --silent; then
   gem install foreman
 fi
 
-exec foreman start -f Procfile.dev "$@"
+# update foreman path in case it is not in the path
+GEM_PATH=`gem environment home`
+${GEM_PATH}/bin/foreman start -f Procfile.dev "$@"
