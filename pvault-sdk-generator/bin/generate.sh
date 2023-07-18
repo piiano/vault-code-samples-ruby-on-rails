@@ -13,4 +13,12 @@ docker run --rm \
     -g ruby \
     -o local/out
 
-sudo mv $PWD/out/ ../pvault-sdk
+echo "OS is `uname`"
+if [ `uname` == "Linux" ] ; then
+    echo "Linux requires sudo"
+    set -x
+    sudo mv $PWD/out/ ../pvault-sdk
+else
+    set -x
+    mv $PWD/out/ ../pvault-sdk
+fi

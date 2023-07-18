@@ -17,6 +17,8 @@ Piiano Vault Ruby on Rails framework samples
 
 The code in this directory contains sample code in Ruby on Rails (RoR) framework for a safe User management CRUD API with [Piiano Vault](http://piiano.com) with [ActiveRecord record encryption](https://guides.rubyonrails.org/active_record_encryption.html).
 
+This demo application version is 0.9 and is compatible with Vault version 1.8.0 .
+
 ## Background
 
 Piiano Vault is the secure home for sensitive personal data. It allows you to safely store sensitive personal data in your own cloud environment with automated compliance controls.  
@@ -36,7 +38,7 @@ More details can be found [on our website](https://piiano.com/pii-data-privacy-v
 
 ## Prerequisites
 
-- [Ruby v3.1.3+](https://www.ruby-lang.org/en/)
+- [Ruby v3.2.2+](https://www.ruby-lang.org/en/)
 - [Docker](https://www.docker.com/)
 - [Piiano Vault](https://piiano.com/docs/guides/get-started)
 
