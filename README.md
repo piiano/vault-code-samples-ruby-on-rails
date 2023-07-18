@@ -38,7 +38,7 @@ More details can be found [on our website](https://piiano.com/pii-data-privacy-v
 
 ## Prerequisites
 
-- [Ruby v3.1.3+](https://www.ruby-lang.org/en/)
+- [Ruby v3.2.2+](https://www.ruby-lang.org/en/)
 - [Docker](https://www.docker.com/)
 - [Piiano Vault](https://piiano.com/docs/guides/get-started)
 
