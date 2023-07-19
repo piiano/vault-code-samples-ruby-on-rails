@@ -47,7 +47,7 @@ jobs:
       - name: Check Out Repo.
         uses: actions/checkout@v3
         with:
-          repository: piiano/vault-code-samples-ruby-on-rails
+          token: ${{ secrets.CICD_RELEASES_PAT }}
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
