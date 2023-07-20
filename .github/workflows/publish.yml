@@ -55,6 +55,7 @@ jobs:
           ruby-version: ${{ matrix.ruby-version }}
 
       - name: Update vault version
+        if: github.event_name == 'workflow_dispatch'
         run: |
             sed -i -E "s|pvault-dev:[0-9]+\.[0-9]+\.[0-9]+|pvault-dev:${{ inputs.vault_version }}|g" Makefile
 
