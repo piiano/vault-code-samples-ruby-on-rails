@@ -1,5 +1,5 @@
 PVAULT_DOCKER_NAME	:= pvault-dev
-PVAULT_DOCKER_TAG	?= piiano/pvault-dev:1.8.0
+PVAULT_DOCKER_TAG	?= "piiano/pvault-dev:1.8.0"
 
 APP_DIR						:= ./rails
 SDK_DIR						:= ./pvault-sdk
@@ -78,6 +78,7 @@ $(OPENAPI_YAML):
 	curl -o ./pvault-sdk-generator/openapi.yaml $(OPENAPI_URL)
 
 $(SDK_DIR)/pvault-sdk.gemspec: $(OPENAPI_YAML)
+	-rm -rf $(SDK_DIR)/out
 	cd $(SDK_GENERATOR_DIR) && ./bin/generate.sh
 
 .PHONY: generate-sdk
