@@ -78,6 +78,7 @@ $(OPENAPI_YAML):
 	curl -o ./pvault-sdk-generator/openapi.yaml $(OPENAPI_URL)
 
 $(SDK_DIR)/pvault-sdk.gemspec: $(OPENAPI_YAML)
+	-rm -rf $(SDK_DIR)/out
 	cd $(SDK_GENERATOR_DIR) && ./bin/generate.sh
 
 .PHONY: generate-sdk
