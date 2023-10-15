@@ -11,6 +11,10 @@ on:
   pull_request:
     branches: [ main ]
   workflow_dispatch:
+  workflow_call:
+    secrets:
+      PVAULT_SERVICE_LICENSE:
+        required: true
 
 env:
   PVAULT_SERVICE_LICENSE: ${{ secrets.PVAULT_SERVICE_LICENSE }}
