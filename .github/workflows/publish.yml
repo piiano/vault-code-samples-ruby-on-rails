@@ -8,8 +8,7 @@
 name: Publish
 
 on:
-  pull_request:
-    branches: [ main ]
+  workflow_call:
   workflow_dispatch:
     inputs:
       vault_version:
@@ -33,7 +32,6 @@ on:
 
 env:
   PVAULT_SERVICE_LICENSE: ${{ secrets.PVAULT_SERVICE_LICENSE }}
-  PVAULT_API_KEY: ${{ secrets.PVAULT_API_KEY }}
 
 jobs:
   test:
