@@ -5,6 +5,26 @@ APP_DIR						:= ./rails
 SDK_DIR						:= ./pvault-sdk
 SDK_GENERATOR_DIR	:= ./pvault-sdk-generator
 
+# Detect OS - Some commands on Linux and Mac are different.
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Darwin)
+        TIMEOUT := gtimeout
+        SOURCE := source
+endif
+ifeq ($(UNAME_S),Linux)
+        TIMEOUT := timeout
+        SOURCE := .
+endif
+
+ifeq ($(UNAME_S),Darwin)
+        TIMEOUT := gtimeout
+        SOURCE := source
+endif
+ifeq ($(UNAME_S),Linux)
+        TIMEOUT := timeout
+        SOURCE := .
+endif
+
 ###### PVAULT ######
 .PHONY: pvault-run
 pvault-run: pvault-stop
@@ -19,7 +39,7 @@ pvault-run: pvault-stop
 			$(PVAULT_DOCKER_TAG)
 
 	# Give Vault a few seconds to start
-	sleep 3
+	$(TIMEOUT) 30 bash -c 'until curl -s --fail http://localhost:8123/api/pvlt/1.0/data/info/health; do sleep 1; done'
 
 	# Check if Vault is running. Display logs otherwise.
 	if [ "$$( docker container inspect -f '{{.State.Status}}' $(PVAULT_DOCKER_NAME) )" = "running" ]; then \
