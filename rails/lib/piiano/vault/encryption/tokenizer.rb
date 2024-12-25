@@ -19,7 +19,6 @@ module Piiano
           
           @collection = options[:collection]
           @property = options[:property]
-          @reason = options[:reason] || 'AppFunctionality'
 
           config = PvaultSdk::Configuration.default
           # Make sure array encoding is multi-value instead of indexed pairs
@@ -50,7 +49,7 @@ module Piiano
 
           begin
             # Detokenize tokens
-            result = @tokens_api.search_tokens(@collection, @reason, query_token)
+            result = @tokens_api.search_tokens(@collection, query_token)
           rescue PvaultSdk::ApiError => e
             false
           end
@@ -67,7 +66,7 @@ module Piiano
             # Add a secure object to Vault.  This is an anti-patern 
             request_body = {}
             request_body[@property] = clear_text
-            add_object_result = @objects_api.add_object(@collection, @reason, request_body, opts)
+            add_object_result = @objects_api.add_object(@collection, request_body, opts)
 
             # Tokenize
             tokenize_request = PvaultSdk::TokenizeRequest.new({
@@ -79,7 +78,7 @@ module Piiano
               cipher_options[:deterministic] ? "deterministic" : "randomized"
             )
 
-            tokenize_result = @tokens_api.tokenize(@collection, @reason, [tokenize_request], opts)
+            tokenize_result = @tokens_api.tokenize(@collection, [tokenize_request], opts)
             # We get an array of tokenize results. Pick the first one and return the token_id
             tokenize_result&.first&.token_id
           rescue PvaultSdk::ApiError => e
@@ -101,7 +100,7 @@ module Piiano
 
           begin
             # Detokenize tokens
-            result = @tokens_api.detokenize(@collection, @reason, opts)
+            result = @tokens_api.detokenize(@collection,  opts)
             result&.first&.fields[@property.to_s]
           rescue PvaultSdk::ApiError => e
             raise ActiveRecord::Encryption::Errors::Decryption
@@ -120,7 +119,6 @@ module Piiano
           final_options = {}
           final_options[:collection] = options[:collection] if options[:collection]
           final_options[:property] = options[:property] if options[:property]
-          final_options[:reason] = options[:reason] if options[:reason]
           final_options
         end
 
